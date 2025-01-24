@@ -48,7 +48,7 @@ class Profile() {
     private var friends: MutableList<Friend> = mutableListOf()
 
     var name = ""
-    var age = ""
+    var age = 0
     var phoneNumber = ""
     var email = ""
 

@@ -13,13 +13,14 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.example.cuoi.Hasher
+import com.example.cuoi.ProfileManager
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Check login state
-        val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
         val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
 
         if (isLoggedIn) {
@@ -32,7 +33,8 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         // check validation
-        val sharedInfo = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        val sharedInfo = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+        val profileManager = ProfileManager(this)
 
         val emailEditText: EditText = findViewById(R.id.emailEditText)
         val passwordEditText: EditText = findViewById(R.id.passwordEditText)
@@ -45,20 +47,32 @@ class LoginActivity : AppCompatActivity() {
         val usernameBox: TextView = navHeader.findViewById<TextView>(R.id.usernameBox)
         val hasher = Hasher()
 
+        val registerText = findViewById<TextView>(R.id.textViewRegister)
+
+        registerText.setOnClickListener {
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+        }
+
         loginButton.setOnClickListener {
-            val email = emailEditText.text.toString()
+            val username = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
-            val storedPassword = sharedInfo.getString("user_$email", null)
+            val storedPassword = sharedInfo.getString("user_$username", null)
 
             if (storedPassword != null && hasher.hash(password) == storedPassword) {
                 // Save login state
                 val editor = sharedPreferences.edit()
                 editor.putBoolean("isLoggedIn", true) // Set login state
-                editor.putString("email", email)     // Optionally save email
+                editor.putString("username", username)
                 editor.apply()
 
-                emailBox.text = email
-                usernameBox.text = ":))))"
+                // get the profile info
+                val profiles = profileManager.loadProfiles(this)
+                val profile = profiles[username]
+                if (profile != null) {
+                    emailBox.text = profile.email
+                    usernameBox.text = profile.name
+                }
 
                 // Navigate to the main activity
                 startActivity(Intent(this, MainActivity::class.java))
