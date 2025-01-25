@@ -84,4 +84,12 @@ class Profile() {
         }
         return null
     }
+
+    fun getCache(): MutableMap<String, Int> {
+        return cache
+    }
+
+    fun getFriends(): MutableList<Friend> {
+        return friends
+    }
 }

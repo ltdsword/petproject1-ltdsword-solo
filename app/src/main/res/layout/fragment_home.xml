@@ -1,18 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!-- It can have only ONE direct child, so i have to include just 1 LinearLayout -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"
-        android:textSize="30sp"
-        android:layout_centerInParent="true"
-        android:textColor="@color/red"
-        />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/greeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Chào buổi"
+            android:fontFamily="@font/sfheavy"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bắc kỳ chóa"
+            android:fontFamily="@font/fleurdeleah"
+            android:textStyle="bold"
+            android:textColor="@color/red"
+            android:textSize="30sp" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="1dp" >
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:padding="8dp"
+                android:spinnerMode="dropdown" />
+
+            <EditText
+                android:id="@+id/price"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:fontFamily="@font/sfheavy"
+                android:hint="Price"
+                android:padding="10dp"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:layout_marginLeft="30dp"
+            android:id="@+id/checkbox"
+            android:fontFamily="@font/sfheavy"
+            android:text="Áp dụng giá này cho lần sau"
+            android:textSize="12sp" />
+
+
+    </LinearLayout>
+</ScrollView>
