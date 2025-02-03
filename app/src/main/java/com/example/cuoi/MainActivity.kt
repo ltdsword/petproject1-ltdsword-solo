@@ -16,6 +16,9 @@ import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.navigation.NavigationView
 import android.content.Context
 import android.content.Intent
+import android.view.LayoutInflater
+import android.widget.TextView
+import org.w3c.dom.Text
 
 // Extend on navigation item selected listener
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -37,6 +40,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             finish()
             return
         }
+
+        // get the user's info
+        val data = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        val username = data.getString("username", null)
+        val profileManager = ProfileManager(this)
+        val profiles = profileManager.loadProfiles()
+        val profile = profiles[username] ?: return
+        val email = profile.email
+
 
         setContentView(R.layout.activity_main)
 //        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -65,6 +77,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             replaceFragment(HomeFragment())
             navigationView.setCheckedItem(R.id.nav_home)
         }
+
+        val inflater = LayoutInflater.from(this)
+        val navHeader = inflater.inflate(R.layout.nav_header, null)
+        val usernameBox = navHeader.findViewById<TextView>(R.id.usernameBox)
+        val emailBox = navHeader.findViewById<TextView>(R.id.emailBox)
+
+        usernameBox.text = username
+        emailBox.text = email
     }
 
     // on navi item selected
@@ -91,6 +111,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     // handle event when we want to close the navi view (press on the "back" button)
+    @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
     override fun onBackPressed() {
         super.onBackPressed()
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -102,7 +123,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun logout() {
-        val sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.clear() // Clear all saved data
         editor.apply()

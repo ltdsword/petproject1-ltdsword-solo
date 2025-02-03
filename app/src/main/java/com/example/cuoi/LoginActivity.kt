@@ -7,6 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
@@ -40,11 +41,11 @@ class LoginActivity : AppCompatActivity() {
         val passwordEditText: EditText = findViewById(R.id.passwordEditText)
         val loginButton: Button = findViewById(R.id.loginButton)
 
-        val inflater = LayoutInflater.from(this)
-        val navHeader = inflater.inflate(R.layout.nav_header, null)
-
-        val emailBox: TextView = navHeader.findViewById<TextView>(R.id.emailBox)
-        val usernameBox: TextView = navHeader.findViewById<TextView>(R.id.usernameBox)
+//        val inflater = LayoutInflater.from(this)
+//        val navHeader = inflater.inflate(R.layout.nav_header, null)
+//
+//        val emailBox: TextView = navHeader.findViewById<TextView>(R.id.emailBox)
+//        val usernameBox: TextView = navHeader.findViewById<TextView>(R.id.usernameBox)
         val hasher = Hasher()
 
         val registerText = findViewById<TextView>(R.id.textViewRegister)
@@ -59,6 +60,8 @@ class LoginActivity : AppCompatActivity() {
             val password = passwordEditText.text.toString()
             val storedPassword = sharedInfo.getString("user_$username", null)
 
+            Log.d("MyTag", storedPassword + " " + hasher.hash(password))
+
             if (storedPassword != null && hasher.hash(password) == storedPassword) {
                 // Save login state
                 val editor = sharedPreferences.edit()
@@ -66,13 +69,13 @@ class LoginActivity : AppCompatActivity() {
                 editor.putString("username", username)
                 editor.apply()
 
-                // get the profile info
-                val profiles = profileManager.loadProfiles(this)
-                val profile = profiles[username]
-                if (profile != null) {
-                    emailBox.text = profile.email
-                    usernameBox.text = profile.name
-                }
+//                // get the profile info
+//                val profiles = profileManager.loadProfiles()
+//                val profile = profiles[username]
+//                if (profile != null) {
+//                    emailBox.text = profile.email
+//                    usernameBox.text = profile.name
+//                }
 
                 // Navigate to the main activity
                 startActivity(Intent(this, MainActivity::class.java))

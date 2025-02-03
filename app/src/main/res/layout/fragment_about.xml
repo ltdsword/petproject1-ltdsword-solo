@@ -15,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Fack you everyone:3"
+            android:id="@+id/text"
             android:fontFamily="@font/sfheavy"
             android:textSize="35sp"
             android:layout_marginTop="100dp"
@@ -23,7 +24,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="426dp"
-            android:id="@+id/text"
+            android:id="@+id/image"
             android:contentDescription="Fack you everyone..."
             android:src="@drawable/suss" />
 

@@ -3,8 +3,11 @@ package com.example.cuoi
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
@@ -20,7 +23,7 @@ class RegisterActivity : AppCompatActivity() {
 
         val sharedInfo = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
         val profileManager = ProfileManager(this)
-        val profiles = profileManager.loadProfiles(this)
+        val profiles = profileManager.loadProfiles()
 
         registerButton.setOnClickListener {
             val username = usernameField.text.toString()
@@ -39,6 +42,8 @@ class RegisterActivity : AppCompatActivity() {
                     editor.putString("user_$email", hasher.hash(password)) // 2 ways to get in
                     editor.apply()
 
+                    Log.d("MyTag", hasher.hash(password))
+
                     // Save the profile data
                     var newProfile: Profile = Profile()
                     newProfile.name = username
@@ -48,6 +53,13 @@ class RegisterActivity : AppCompatActivity() {
 
                     profiles[username] = newProfile
                     profileManager.saveProfiles(profiles)
+                    // set detail in the nav_header
+//                    val inflater = LayoutInflater.from(this)
+//                    val navHeader = inflater.inflate(R.layout.nav_header, null)
+//                    val emailBox: TextView = navHeader.findViewById<TextView>(R.id.emailBox)
+//                    val usernameBox: TextView = navHeader.findViewById<TextView>(R.id.usernameBox)
+//                    emailBox.text = newProfile.email
+//                    usernameBox.text = newProfile.name
 
 
                     // Go back to LoginActivity

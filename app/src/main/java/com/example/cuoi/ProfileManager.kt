@@ -7,7 +7,7 @@ class ProfileManager(private val context: Context) {
     private val sharedPreferences = context.getSharedPreferences("DataPrefs", Context.MODE_PRIVATE)
     private val gson = Gson()
 
-    fun defaultProfile(context: Context): Profile {
+    private fun defaultProfile(): Profile {
         var profile = Profile()
         profile.name = "admin"
         profile.email = "admin(j97bocon)@gmail.com"
@@ -31,14 +31,14 @@ class ProfileManager(private val context: Context) {
     }
 
     // Retrieve the map of username to Profile
-    fun loadProfiles(context: Context): MutableMap<String, Profile> {
+    fun loadProfiles(): MutableMap<String, Profile> {
         val json = sharedPreferences.getString("profiles", null)
         return if (json != null) {
-            val type = object : TypeToken<Map<String, Profile>>() {}.type
+            val type = object : TypeToken<MutableMap<String, Profile>>() {}.type
             gson.fromJson(json, type)
         } else {
             val ret: MutableMap<String, Profile> = mutableMapOf()
-            val profile = defaultProfile(context)
+            val profile = defaultProfile()
             ret[profile.name] = profile
             saveProfiles(ret)
             return ret

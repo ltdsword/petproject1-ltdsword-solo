@@ -17,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:layout_marginLeft="8dp"
             android:text="Chào buổi"
             android:fontFamily="@font/sfheavy"
             android:textColor="@color/black"
@@ -24,9 +25,10 @@
 
         <TextView
             android:id="@+id/username"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Bắc kỳ chóa"
+            android:text="Datdeptrai"
+            android:padding="8dp"
             android:fontFamily="@font/fleurdeleah"
             android:textStyle="bold"
             android:textColor="@color/red"
@@ -36,13 +38,25 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="1dp" >
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="170dp"
+
+            <AutoCompleteTextView
+                android:id="@+id/cache_autocomplete"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
                 android:padding="8dp"
-                android:spinnerMode="dropdown" />
+                android:layout_marginLeft="30dp"
+                android:textSize="16sp"
+                android:fontFamily="@font/sfheavy"
+                android:hint="Hôm nay bạn ăng gì?"
+                android:inputType="text"
+                android:focusable="true"
+                android:clickable="true"
+                android:dropDownHeight="wrap_content"
+                android:dropDownVerticalOffset="4dp"
+                android:dropDownHorizontalOffset="0dp"
+                android:dropDownWidth="match_parent"
+                android:focusableInTouchMode="true"
+                />
 
             <EditText
                 android:id="@+id/price"
@@ -51,7 +65,7 @@
                 android:layout_marginLeft="20dp"
                 android:fontFamily="@font/sfheavy"
                 android:hint="Price"
-                android:padding="10dp"
+                android:padding="8dp"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -62,8 +76,40 @@
             android:id="@+id/checkbox"
             android:fontFamily="@font/sfheavy"
             android:text="Áp dụng giá này cho lần sau"
+            android:checked="true"
             android:textSize="12sp" />
 
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp" />
 
+        <Button
+            android:id="@+id/addFriendButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Friend"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:background="@drawable/button_rectangle"
+            android:textColor="@color/white" /> <!-- Optional text color -->
+
+
+        <Button
+            android:id="@+id/apply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="Apply"
+            android:textStyle="bold"
+            android:textColor="@color/redder"
+            android:textSize="16sp"
+            android:fontFamily="@font/sfbold"
+            android:backgroundTint="@color/pink"/>
     </LinearLayout>
 </ScrollView>

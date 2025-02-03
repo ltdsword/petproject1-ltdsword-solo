@@ -1,6 +1,6 @@
 package com.example.cuoi
 
-data class Object(val name: String, val price: Int)
+data class Object(val name: String, val price: Int, val date: String)
 
 class History {
     private var total = 0
@@ -14,8 +14,8 @@ class History {
         return total
     }
 
-    fun addObject(name: String, price: Int) {
-        hist.add(Object(name, price))
+    fun addObject(date: String, name: String, price: Int) {
+        hist.add(Object(name, price, date))
         total += price
     }
 
@@ -30,11 +30,11 @@ class History {
     }
 
     fun recal() {
-        recalculate();
+        recalculate()
     }
 
     fun getTotal(): Int {
-        return total;
+        return total
     }
 }
 
@@ -45,6 +45,7 @@ class Friend(var name: String, var email: String, var phoneNumber: String) {
 
 class Profile() {
     private var cache: MutableMap<String, Int> = mutableMapOf()
+    private var hist: MutableList<Pair<String, Int>> = mutableListOf()
     private var friends: MutableList<Friend> = mutableListOf()
 
     var name = ""
@@ -62,18 +63,27 @@ class Profile() {
     }
 
     fun addCache(place: String, price: Int) {
-        if (cache[place] != null) {
-            cacheExist = true
-            return
-        }
-        else {
-            cache[place] = price
-            cacheExist = false
-        }
+        cache[place] = price
     }
 
-    fun findCache(place: String): Boolean {
-        return cache[place] != null
+    fun addHist(place: String, price: Int) {
+        hist.add(Pair(place, price))
+    }
+
+    fun clearAllHist() {
+        hist.clear()
+    }
+
+    fun clearFriend(f: Friend) {
+        friends.remove(f)
+    }
+
+    fun clearFriend(index: Int) {
+        friends.removeAt(index)
+    }
+
+    fun findCache(place: String): Int? {
+        return cache[place]
     }
 
     fun findFriend(name: String): Friend? {
@@ -85,11 +95,31 @@ class Profile() {
         return null
     }
 
+    fun setCache(cache: MutableMap<String, Int>) {
+        this.cache = cache
+    }
+
+    fun setFriends(friends: MutableList<Friend>) {
+        this.friends = friends
+    }
+
     fun getCache(): MutableMap<String, Int> {
         return cache
     }
 
     fun getFriends(): MutableList<Friend> {
         return friends
+    }
+
+    fun getHist(): MutableList<Pair<String, Int>> {
+        return hist
+    }
+
+    fun getTotal() : Int {
+        var tot = 0
+        for (i in friends) {
+            tot += i.hist.getTotal()
+        }
+        return tot
     }
 }

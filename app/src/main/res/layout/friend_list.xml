@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp" >
+
+        <Button
+            android:id="@+id/clearFriend"
+            android:layout_width="45dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:drawableStart="@drawable/baseline_clear_24"
+            android:textStyle="bold"
+            android:textSize="30sp"
+            android:padding="8dp"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="0dp" >
+
+            <TextView
+                android:id="@+id/friend_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:padding="8dp"
+                android:layout_marginLeft="8dp"
+                android:text="Name"
+                android:fontFamily="@font/sfheavy"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/friend_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="Email"
+                android:layout_marginLeft="16dp"
+                android:textStyle="bold"
+                android:fontFamily="@font/sfheavy"
+                android:textColor="#555555" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkBoxPrice"
+            android:layout_width="34dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right"
+            android:layout_marginLeft="8dp"
+            android:fontFamily="@font/sfheavy"
+            android:text=""
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/price"
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sfheavy"
+            android:hint="Price"
+            android:padding="8dp"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:fontFamily="@font/sfheavy"
+            android:layout_marginLeft="8dp"
+            />
+
+        <CheckBox
+            android:id="@+id/checkBoxExtra"
+            android:layout_width="34dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right"
+            android:layout_marginLeft="8dp"
+            android:fontFamily="@font/sfheavy"
+            android:text=""
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/extra"
+            android:fontFamily="@font/sfheavy"
+            android:textSize="15sp"
+            android:padding="8dp"
+            android:textStyle="bold"
+            android:hint="Extra"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="="
+            android:fontFamily="@font/sfheavy"
+            android:layout_marginLeft="8dp"
+            />
+
+        <TextView
+            android:id="@+id/total"
+            android:layout_width="88dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:fontFamily="@font/sfheavy"
+            android:hint="Total"
+            android:padding="8dp"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</LinearLayout>
