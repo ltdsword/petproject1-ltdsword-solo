@@ -33,6 +33,10 @@ class History {
         recalculate()
     }
 
+    fun getList(): MutableList<Object> {
+        return hist
+    }
+
     fun getTotal(): Int {
         return total
     }
@@ -40,7 +44,36 @@ class History {
 
 
 class Friend(var name: String, var email: String, var phoneNumber: String) {
+    private val colors = arrayOf(
+        R.color.black, R.color.redder, R.color.red,
+        R.color.orange, R.color.yellow, R.color.purple_700,
+        R.color.purple_500, R.color.purple_200, R.color.blue,
+        R.color.teal_700, R.color.teal_200, R.color.greener,
+        R.color.green, R.color.grey)
+
+    private val level = arrayOf(
+        3000000, 1000000, 700000, 500000, 300000,
+        200000, 150000, 120000, 100000, 70000,
+        50000, 20000, 5000, 0
+    )
+    init {
+        colors.reverse()
+        level.reverse()
+    }
+
+    private val len = 14
+    private val lim = 3000000
     var hist = History()
+    var color = R.color.grey
+
+    fun sync() {
+        val index = level.binarySearch(hist.getTotal())
+        color = if (index >= 0) {
+            colors[index]
+        } else {
+            colors[len-1]
+        }
+    }
 }
 
 class Profile() {

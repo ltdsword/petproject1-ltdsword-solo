@@ -164,6 +164,28 @@ class HomeFragment : Fragment() {
         listView.adapter = friendAdapter
         /////////////////
 
+        // Sync the Price when the price box change /////////////////////////////
+        priceBox.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                syncPrice(listView, priceBox, "default")
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        // Add Friend ///////////////
+        val addFriendButton = view.findViewById<Button>(R.id.addFriendButton)
+        addFriendButton.setBackgroundColor(R.color.grey)
+        addFriendButton.setOnClickListener {
+            addFriend(friendAdapter, listView, friends)
+        }
+
+        // Choose All //////////////////////////////////
+        val chooseAllButton = view.findViewById<Button>(R.id.chooseAll)
+        chooseAllButton.setOnClickListener {
+            syncPrice(listView, priceBox, "choose_all")
+        }
+
         // Apply Changes /////////////////////////////////////////////////////////
         val applyButton: Button = view.findViewById(R.id.apply)
         applyButton.setOnClickListener {
@@ -180,6 +202,7 @@ class HomeFragment : Fragment() {
                     for (i in 0..<priceList.size) {
                         if (priceList[i] != 0) {
                             friends[i].hist.addObject(formattedTime, placeSelected, priceSelected)
+                            friends[i].sync()
                         }
                     }
                     if (checkBox.isChecked) {
@@ -212,25 +235,12 @@ class HomeFragment : Fragment() {
                 .show()
         }
 
-        val addFriendButton = view.findViewById<Button>(R.id.addFriendButton)
-        addFriendButton.setBackgroundColor(R.color.grey)
-        addFriendButton.setOnClickListener {
-            addFriend(friendAdapter, listView)
-        }
     }
 
-    private fun addFriend(friendAdapter: FriendAdapter, listView: ListView) {
-        val data = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-        val username = data.getString("username", null)
-        val profileManager = ProfileManager(requireContext())
-        val profiles = profileManager.loadProfiles()
-        val profile = profiles[username]
+    private fun addFriend(friendAdapter: FriendAdapter, listView: ListView, friends: MutableList<Friend>) {
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.add_friend, null)
         val nameEditText = dialogView.findViewById<EditText>(R.id.name_input)
         val emailEditText = dialogView.findViewById<EditText>(R.id.email_input)
-
-        if (profile == null) return
-        val friends = profile.getFriends()
 
         AlertDialog.Builder(requireContext())
             .setTitle("Thêm thằng")
@@ -239,9 +249,12 @@ class HomeFragment : Fragment() {
                 val name = nameEditText.text.toString()
                 val email = emailEditText.text.toString()
 
-                if (name.isNotBlank() && email.isNotBlank()) {
+                if (name.isNotBlank()) {
                     val newFriend = Friend(name, email, "")
+                    // Log.d("MyTag", "prev. size: $friends.size")
                     friends.add(newFriend)
+                    // Log.d("MyTag", "size: $friends.size")
+
                     // update the friend adapter
                     friendAdapter.clear()
                     friendAdapter.addAll(friends)
@@ -258,6 +271,42 @@ class HomeFragment : Fragment() {
                 dialog.dismiss()
             }
             .show()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun syncPrice(listView: ListView, priceBox: EditText, mode: String = "default") {
+        for (i in 0 until listView.count) {
+            val view = listView.getChildAt(i) ?: continue
+            val checkBoxPrice = view.findViewById<CheckBox>(R.id.checkBoxPrice)
+            val checkBoxExtra = view.findViewById<CheckBox>(R.id.checkBoxExtra)
+            val price = view.findViewById<EditText>(R.id.price)
+            val extra = view.findViewById<EditText>(R.id.extra)
+            val total = view.findViewById<TextView>(R.id.total)
+            if (mode == "choose_all") {
+                checkBoxPrice.isChecked = true
+                price.text = priceBox.text
+            }
+            else {
+                if (checkBoxPrice.isChecked) {
+                    price.text = priceBox.text
+                }
+                else {
+                    price.setText("")
+                }
+            }
+            val p = price.text.toString().toIntOrNull() ?: 0
+            var e = extra.text.toString().toIntOrNull() ?: 0
+            if (!checkBoxExtra.isChecked) e = 0
+            if (price.text.toString() == "") {
+                total.text = ""
+            }
+            else {
+                total.text = (p + e).toString()
+                if (p + e == 0) {
+                    total.text = "0OOO"
+                }
+            }
+        }
     }
 }
 
@@ -286,6 +335,7 @@ class FriendAdapter(context: Context, private val friends: MutableList<Friend>, 
 
         nameTextView.text = friend.name
         emailTextView.text = friend.email
+        nameTextView.setTextColor(ContextCompat.getColor(context, friend.color))
 
         fun update() {
             val p = price.text.toString().toIntOrNull() ?: 0
@@ -304,7 +354,7 @@ class FriendAdapter(context: Context, private val friends: MutableList<Friend>, 
                 if (p + e == 0) {
                     total.text = "0OOO"
                 }
-                total.setTextColor(R.color.redder)
+                total.setTextColor(ContextCompat.getColor(context, R.color.redder))
             }
         }
 

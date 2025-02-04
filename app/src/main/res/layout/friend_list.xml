@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@drawable/border"
+    android:backgroundTint="@color/grey"
     android:padding="8dp">
 
     <LinearLayout
@@ -12,16 +14,18 @@
         android:orientation="horizontal"
         android:padding="8dp" >
 
-        <Button
+        <ImageButton
             android:id="@+id/clearFriend"
-            android:layout_width="45dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="8dp"
-            android:drawableStart="@drawable/baseline_clear_24"
-            android:textStyle="bold"
-            android:textSize="30sp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="16dp"
+            android:contentDescription="Delete"
+            android:src="@drawable/baseline_clear_24"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
-            />
+            android:text="x"
+            android:textSize="16sp"
+            android:textStyle="" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -53,8 +57,6 @@
                 android:fontFamily="@font/sfheavy"
                 android:textColor="#555555" />
         </LinearLayout>
-
-
     </LinearLayout>
 
     <LinearLayout
