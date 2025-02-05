@@ -78,7 +78,7 @@
             android:layout_width="95dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/sfheavy"
-            android:hint="Giá"
+            android:hint="Price"
             android:gravity="center"
             android:padding="8dp"
             android:textSize="15sp"
@@ -112,7 +112,7 @@
             android:padding="8dp"
             android:textStyle="bold"
             android:gravity="center"
-            android:hint="Thêm"
+            android:hint="Extra"
             />
 
         <TextView
@@ -129,7 +129,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:fontFamily="@font/sfheavy"
-            android:hint="Tổng"
+            android:hint="Total"
             android:gravity="center"
             android:padding="8dp"
             android:textSize="15dp"

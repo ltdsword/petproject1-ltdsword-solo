@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginLeft="8dp"
-            android:text="Chào buổi"
+            android:text="Good"
             android:fontFamily="@font/sfheavy"
             android:textColor="@color/black"
             android:textSize="16sp" />
@@ -47,7 +47,7 @@
                 android:layout_marginLeft="30dp"
                 android:textSize="16sp"
                 android:fontFamily="@font/sfheavy"
-                android:hint="Hôm nay bạn ăng gì?"
+                android:hint="What do you eat today?"
                 android:inputType="text"
                 android:focusable="true"
                 android:clickable="true"
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:fontFamily="@font/sfheavy"
-                android:hint="Giá"
+                android:hint="Price"
                 android:gravity="center"
                 android:padding="8dp"
                 android:textSize="16sp" />
@@ -76,7 +76,7 @@
             android:layout_marginLeft="30dp"
             android:id="@+id/checkbox"
             android:fontFamily="@font/sfheavy"
-            android:text="Áp dụng giá này cho lần sau"
+            android:text="Apply this for next time"
             android:checked="true"
             android:textSize="12sp" />
 
@@ -100,7 +100,7 @@
                 android:id="@+id/addFriendButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thêm bạn"
+                android:text="Add Friend"
                 android:layout_marginStart="8dp"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -112,7 +112,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="80dp"
-                android:text="Áp dụng"
+                android:text="Apply"
                 android:textStyle="bold"
                 android:textColor="@color/redder"
                 android:textSize="16sp"
@@ -124,12 +124,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/chooseAll"
-            android:text="Chọn hết"
+            android:text="Choose All"
             android:backgroundTint="@color/teal_200"
             android:textColor="@color/black"
             android:fontFamily="@font/sfheavy"
             android:layout_marginLeft="20dp"
-            android:textSize="14sp"
+            android:textSize="15sp"
             />
     </LinearLayout>
 </ScrollView>

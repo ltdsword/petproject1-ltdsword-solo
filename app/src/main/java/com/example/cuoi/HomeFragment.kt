@@ -88,13 +88,13 @@ class HomeFragment : Fragment() {
         usernameBox.text = username
         val curText = greeting.text.toString()
         if (currentHour <= 5 || currentHour >= 18) {
-            greeting.text = "$curText tối"
+            greeting.text = "$curText evening"
         }
         else if (currentHour in 6..11) {
-            greeting.text = "$curText sáng"
+            greeting.text = "$curText morning"
         }
         else {
-            greeting.text = "$curText chiều"
+            greeting.text = "$curText afternoon"
         }
 
         // DropDownList(AutoCompleteTextView) Configurations ////////////////////////////////
@@ -118,7 +118,7 @@ class HomeFragment : Fragment() {
 
         // Set dropdown behavior
         autoCompleteTextView.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && autoCompleteTextView.text.isEmpty()) {
+            if (hasFocus) {
                 autoCompleteTextView.showDropDown()
             }
         }
@@ -131,18 +131,10 @@ class HomeFragment : Fragment() {
         //println(autoCompleteTextView.text.toString())
 
         autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
-            val selectedCache = cacheList[position]
-            priceSelected = prices[position]
-            Log.d("MyTag", "1-$priceSelected")
-            placeSelected = places[position]
-            autoCompleteTextView.setText(places[position], false)
-
-            if (priceSelected != -1) {
-                priceBox.setText(priceSelected.toString())
-            }
-
-            placeSelected = autoCompleteTextView.text.toString()
-
+            placeSelected = adapter.getItem(position) ?: ""
+            placeSelected = placeSelected.split(":")[0] // remove the price
+            autoCompleteTextView.setText(placeSelected)
+            priceSelected = cache[placeSelected] ?: 0
             val temp = cache[placeSelected]
             if (temp == null) {
                 priceBox.setText("0000")
@@ -154,11 +146,7 @@ class HomeFragment : Fragment() {
             if (placeSelected == "") {
                 priceBox.setText("")
             }
-
-            placeSelected = autoCompleteTextView.text.toString()
-            Log.d("MyTag", "2-$priceSelected")
             priceSelected = priceBox.text.toString().toIntOrNull() ?: 0
-            Log.d("MyTag", "3-$priceSelected")
         }
         // DropDownList finished ///////////////////////////////////////////////////
 
@@ -213,8 +201,8 @@ class HomeFragment : Fragment() {
         val applyButton: Button = view.findViewById(R.id.apply)
         applyButton.setOnClickListener {
             AlertDialog.Builder(requireContext())
-                .setTitle("Check lại đê")
-                .setMessage("Chắc chưa bé?")
+                .setTitle("Double check bro")
+                .setMessage("Are you sure?")
                 .setPositiveButton("Yes sir") { dialog, _ ->
                     // User confirmed, retrieve prices
                     // Save data
@@ -241,7 +229,7 @@ class HomeFragment : Fragment() {
             }
         }
         if (checkBox.isChecked) {
-            profile.addCache(placeSelected, priceSelected)
+            if (placeSelected != "" && priceSelected != 0) profile.addCache(placeSelected, priceSelected)
             cacheList = cache.map {(place, price) -> "$place: ${String.format("%d", price)}"}
             prices = cache.values.toList()
             places = cache.keys.toList()
@@ -254,7 +242,7 @@ class HomeFragment : Fragment() {
         profiles[username] = profile
         profileManager.saveProfiles(profiles)
         /////////////////////////////
-        Toast.makeText(requireContext(), "Lưu rồi nha pé", Toast.LENGTH_SHORT).show()
+        // Toast.makeText(requireContext(), "Saved 6a6y", Toast.LENGTH_SHORT).show()
         // reset all
         friendAdapter.reset(listView)
         autoCompleteTextView.setText("")
@@ -262,6 +250,7 @@ class HomeFragment : Fragment() {
         checkBox.isChecked = true
 
         changed = false
+        friendAdapter.changed = false
     }
 
     // save progress when switch to another fragment ////////////
@@ -274,12 +263,12 @@ class HomeFragment : Fragment() {
             friendAdapter.changed) {
 
             AlertDialog.Builder(requireContext())
-                .setTitle("Lưu tiến trình")
-                .setMessage("Có lưu không?")
-                .setPositiveButton("Có") { _, _ ->
+                .setTitle("Save Progress")
+                .setMessage("U want to save?")
+                .setPositiveButton("Yes sir") { _, _ ->
                     applyChanges()
                 }
-                .setNegativeButton("Không") { dialog, _ ->
+                .setNegativeButton("Nooooo") { dialog, _ ->
                     dialog.dismiss()
                 }
                 .show()
@@ -306,9 +295,9 @@ class HomeFragment : Fragment() {
         val emailEditText = dialogView.findViewById<EditText>(R.id.email_input)
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Thêm thằng")
+            .setTitle("Add Friend")
             .setView(dialogView)
-            .setPositiveButton("Thêm") { dialog, _ ->
+            .setPositiveButton("Add") { dialog, _ ->
                 val name = nameEditText.text.toString()
                 val email = emailEditText.text.toString()
 
@@ -328,13 +317,15 @@ class HomeFragment : Fragment() {
                     setListViewHeight(listView)
                     listView.invalidateViews()
                     listView.refreshDrawableState()
-                    Toast.makeText(requireContext(), "Ồ yea", Toast.LENGTH_SHORT).show()
+
+                    changed = true
+                    Toast.makeText(requireContext(), "Yippee", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(requireContext(), "Check info kĩ vào!!!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Double check again!!!", Toast.LENGTH_SHORT).show()
                 }
                 dialog.dismiss()
             }
-            .setNegativeButton("Thôi") { dialog, _ ->
+            .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
@@ -484,9 +475,9 @@ class FriendAdapter(context: Context, private val friends: MutableList<Friend>, 
 
         deleteButton.setOnClickListener {
             AlertDialog.Builder(context)
-                .setTitle("Xóa bạn bè")
-                .setMessage("Chắc chưa bé?")
-                .setPositiveButton("Ừa") { _, _ ->
+                .setTitle("Delete Friend")
+                .setMessage("Are you sure?")
+                .setPositiveButton("Uhm") { _, _ ->
                     // Remove the friend from the list
                     friends.removeAt(position)
                     // Notify the adapter that the data has changed
@@ -494,7 +485,7 @@ class FriendAdapter(context: Context, private val friends: MutableList<Friend>, 
                     setListViewHeight(parent as ListView)
                     changed = true
                 }
-                .setNegativeButton("Thôi khỏi") { dialog, _ ->
+                .setNegativeButton("Never mind") { dialog, _ ->
                     dialog.dismiss()
                 }
                 .show()

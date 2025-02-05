@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.navigation.NavigationView
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.TextView
 import org.w3c.dom.Text
@@ -25,6 +26,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // declare and initialize store layout
     private lateinit var drawerLayout: DrawerLayout
+
+    private lateinit var username: String
+    private lateinit var email: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,11 +47,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // get the user's info
         val data = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-        val username = data.getString("username", null)
+        username = data.getString("username", null) ?: return
         val profileManager = ProfileManager(this)
         val profiles = profileManager.loadProfiles()
         val profile = profiles[username] ?: return
-        val email = profile.email
+        email = profile.email
 
 
         setContentView(R.layout.activity_main)
@@ -82,9 +86,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navHeader = inflater.inflate(R.layout.nav_header, null)
         val usernameBox = navHeader.findViewById<TextView>(R.id.usernameBox)
         val emailBox = navHeader.findViewById<TextView>(R.id.emailBox)
-
         usernameBox.text = username
         emailBox.text = email
+
+        Log.d("MainActivity", "Username: ${usernameBox.text}, Email: ${emailBox.text}")
     }
 
     // on navi item selected

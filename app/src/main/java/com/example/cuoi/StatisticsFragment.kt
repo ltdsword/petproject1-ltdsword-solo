@@ -22,6 +22,10 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ListPopupWindow
 import android.widget.ListView
+import android.widget.Spinner
+import android.os.Build
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
@@ -29,6 +33,9 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 
 class StatisticsFragment : Fragment() {
 
@@ -126,6 +133,9 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
         // Change Info button
         val changeInfoButton = view.findViewById<ImageButton>(R.id.changeButton)
         val dialogView = LayoutInflater.from(context).inflate(R.layout.add_friend, null)
+        if (dialogView.parent != null) {
+            (dialogView.parent as ViewGroup).removeView(dialogView)
+        }
         val nameEditText = dialogView.findViewById<EditText>(R.id.name_input)
         val emailEditText = dialogView.findViewById<EditText>(R.id.email_input)
         nameEditText.setText(friends[position].name)
@@ -133,7 +143,7 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
 
         changeInfoButton.setOnClickListener {
             AlertDialog.Builder(context)
-                .setTitle("Chỉnh sửa")
+                .setTitle("Edit Info")
                 .setView(dialogView)
                 .setPositiveButton("Oke") { dialog, _ ->
                     val name = nameEditText.text.toString()
@@ -147,13 +157,13 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
                         notifyDataSetChanged()
                         sync(fragmentView.findViewById(R.id.listView))
 
-                        Toast.makeText(context, "Rồi đó", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Yippee", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(context, "Check info kĩ vào!!!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Double check bro!!!", Toast.LENGTH_SHORT).show()
                     }
                     dialog.dismiss()
                 }
-                .setNegativeButton("Thôi") { dialog, _ ->
+                .setNegativeButton("Later") { dialog, _ ->
                     dialog.dismiss()
                 }
                 .show()
@@ -162,9 +172,9 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
         // Pay button
         paidButton.setOnClickListener {
             AlertDialog.Builder(context)
-                .setTitle("Xác nhận")
-                .setMessage("Chắc là trả chưa dậy?")
-                .setPositiveButton("Rồi") { _, _ ->
+                .setTitle("Confirm")
+                .setMessage("Are you sure your friend paid you?")
+                .setPositiveButton("Yeah") { _, _ ->
                     if (historyContainer.visibility == View.VISIBLE) {
                         collapse(historyContainer)
                     }
@@ -174,7 +184,7 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
                     sync(fragmentView.findViewById(R.id.listView))
                     paidButton.setBackgroundColor(ContextCompat.getColor(context, R.color.grey))
                 }
-                .setNegativeButton("Chưa") { dialog, _ ->
+                .setNegativeButton("Uh no") { dialog, _ ->
                     dialog.dismiss()
                 }
                 .show()
@@ -235,7 +245,7 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
         if (historyList.isEmpty()) {
             val emptyRow = TableRow(context).apply {
                 val emptyText = TextView(context).apply {
-                    text = "Không có lịch sử!"
+                    text = "Nothing here bro!"
                     setPadding(8, 4, 8, 4)
                     gravity = Gravity.CENTER
                     setTextColor(ContextCompat.getColor(context, android.R.color.black))
