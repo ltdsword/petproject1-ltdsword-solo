@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import android.view.Gravity
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -17,6 +18,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ListPopupWindow
 import android.widget.ListView
@@ -58,11 +60,29 @@ class StatisticsFragment : Fragment() {
         friends = profile.getFriends()
 
         val currentTotalMoney = view.findViewById<TextView>(R.id.currentMoney)
-        currentTotalMoney.text = profile.getTotal().toString()
+        currentTotalMoney.text = profile.getTotal().toString() + " VND"
 
+        for (i in 0 until friends.size) {
+            friends[i].syncLevel()
+            friends[i].sync()
+        }
         val listView: ListView = view.findViewById(R.id.listView)
         val friendAdapter = FriendStatAdapter(requireContext(), friends, view)
         listView.adapter = friendAdapter
+    }
+
+    private fun setListViewHeight(listView: ListView) {
+        val listViewAdapter = listView.adapter ?: return
+        var totalHeight = 0
+        for (i in 0 until listViewAdapter.count) {
+            val listItem = listViewAdapter.getView(i, null, listView)
+            listItem.measure(0, 0)
+            totalHeight += listItem.measuredHeight
+        }
+        val params = listView.layoutParams
+        params.height = totalHeight + (listView.dividerHeight * (listViewAdapter.count - 1))
+        listView.layoutParams = params
+        listView.requestLayout()
     }
 }
 
@@ -70,27 +90,30 @@ class StatisticsFragment : Fragment() {
 class FriendStatAdapter(context: Context, private val friends: MutableList<Friend>, private val fragmentView: View) :
     ArrayAdapter<Friend>(context, 0, friends) {
 
+
     @SuppressLint("SetTextI18n", "ResourceAsColor")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         // Get the current Friend object
-        val friend = friends[position]
+        var friend = friends[position]
         val money = friend.hist.getTotal()
 
         // Inflate the view if it's not already created
         val view = convertView ?: LayoutInflater.from(context)
-            .inflate(R.layout.friend_list, parent, false)
+            .inflate(R.layout.friend_stat, parent, false)
 
-        val nameBox = view.findViewById<TextView>(R.id.friend_name)
-        val emailBox = view.findViewById<TextView>(R.id.friend_email)
-        val histButton = view.findViewById<Button>(R.id.history)
-        val paidButton = view.findViewById<Button>(R.id.payButton)
-        val moneyText = view.findViewById<TextView>(R.id.money)
-        val historyContainer = view.findViewById<LinearLayout>(R.id.historyContainer)
-        val historyTable = view.findViewById<TableLayout>(R.id.historyTable)
+        val nameBox = view.findViewById<TextView>(R.id.friend_name) ?: return view
+        val emailBox = view.findViewById<TextView>(R.id.friend_email) ?: return view
+        val histButton = view.findViewById<Button>(R.id.history) ?: return view
+        val paidButton = view.findViewById<Button>(R.id.payButton) ?: return view
+        val moneyText = view.findViewById<TextView>(R.id.money) ?: return view
+        val historyContainer = view.findViewById<LinearLayout>(R.id.historyContainer) ?: return view
+        val historyTable = view.findViewById<TableLayout>(R.id.historyTable) ?: return view
 
         nameBox.text = friend.name
         emailBox.text = friend.email
         moneyText.text = money.toString()
+
+        Log.d("MyTag", "position: $position, friend.color: ${friend.index}, total: ${friend.hist.getTotal()}")
 
         nameBox.setTextColor(ContextCompat.getColor(context, friend.color))
         moneyText.setTextColor(ContextCompat.getColor(context, friend.color))
@@ -99,14 +122,57 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
             paidButton.setBackgroundColor(ContextCompat.getColor(context, R.color.teal_700))
         }
 
+
+        // Change Info button
+        val changeInfoButton = view.findViewById<ImageButton>(R.id.changeButton)
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.add_friend, null)
+        val nameEditText = dialogView.findViewById<EditText>(R.id.name_input)
+        val emailEditText = dialogView.findViewById<EditText>(R.id.email_input)
+        nameEditText.setText(friends[position].name)
+        emailEditText.setText(friends[position].email)
+
+        changeInfoButton.setOnClickListener {
+            AlertDialog.Builder(context)
+                .setTitle("Chỉnh sửa")
+                .setView(dialogView)
+                .setPositiveButton("Oke") { dialog, _ ->
+                    val name = nameEditText.text.toString()
+                    val email = emailEditText.text.toString()
+                    if (name.isNotBlank()) {
+                        friends[position].name = name
+                        friends[position].email = email
+                        friend = friends[position]
+                        nameBox.text = friend.name
+                        emailBox.text = friend.email
+                        notifyDataSetChanged()
+                        sync(fragmentView.findViewById(R.id.listView))
+
+                        Toast.makeText(context, "Rồi đó", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "Check info kĩ vào!!!", Toast.LENGTH_SHORT).show()
+                    }
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Thôi") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
+
         // Pay button
         paidButton.setOnClickListener {
             AlertDialog.Builder(context)
                 .setTitle("Xác nhận")
                 .setMessage("Chắc là trả chưa dậy?")
                 .setPositiveButton("Rồi") { _, _ ->
+                    if (historyContainer.visibility == View.VISIBLE) {
+                        collapse(historyContainer)
+                    }
                     friend.hist.clear()
+                    friends[position].hist.clear()
+                    friends[position].sync()
                     sync(fragmentView.findViewById(R.id.listView))
+                    paidButton.setBackgroundColor(ContextCompat.getColor(context, R.color.grey))
                 }
                 .setNegativeButton("Chưa") { dialog, _ ->
                     dialog.dismiss()
@@ -188,6 +254,7 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
                 setPadding(8, 4, 8, 4)
                 gravity = Gravity.CENTER
                 setTextColor(ContextCompat.getColor(context, android.R.color.black))
+                setBackgroundColor(ContextCompat.getColor(context, R.color.teal_200))
             }
 
             val placeText = TextView(context).apply {
@@ -195,6 +262,7 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
                 setPadding(8, 4, 8, 4)
                 gravity = Gravity.CENTER
                 setTextColor(ContextCompat.getColor(context, android.R.color.black))
+                setBackgroundColor(ContextCompat.getColor(context, R.color.teal_200))
             }
 
             val priceText = TextView(context).apply {
@@ -202,6 +270,7 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
                 setPadding(8, 4, 8, 4)
                 gravity = Gravity.CENTER
                 setTextColor(ContextCompat.getColor(context, android.R.color.black))
+                setBackgroundColor(ContextCompat.getColor(context, R.color.teal_200))
             }
 
             row.addView(dateText)
@@ -214,8 +283,6 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
     }
 
 
-
-
     @SuppressLint("SetTextI18n")
     private fun sync(listView: ListView) {
         val data = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
@@ -224,7 +291,7 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
         val profiles = profileManager.loadProfiles()
         val profile = profiles[username] ?: return
         val currentTotalMoney = fragmentView.findViewById<TextView>(R.id.currentMoney)
-        currentTotalMoney.text = profile.getTotal().toString()
+        currentTotalMoney.text = profile.getTotal().toString() + " VND"
 
         for (i in 0 until listView.count) {
             val view = listView.getChildAt(i) ?: continue
@@ -238,6 +305,7 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
             moneyText.setTextColor(ContextCompat.getColor(context, friends[i].color))
         }
 
+        profile.setFriends(friends)
         profiles[username] = profile
         profileManager.saveProfiles(profiles)
     }

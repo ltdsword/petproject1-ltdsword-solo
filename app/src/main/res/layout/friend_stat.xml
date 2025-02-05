@@ -12,6 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/changeButton"
+            android:contentDescription="Change"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/baseline_change_circle_24" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -20,24 +29,23 @@
 
             <TextView
                 android:id="@+id/friend_name"
-                android:layout_width="270dp"
+                android:layout_width="235dp"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:padding="8dp"
                 android:layout_marginLeft="8dp"
                 android:text="Name"
                 android:fontFamily="@font/sfheavy"
-                android:textColor="@color/black"
                 android:textStyle="bold"
                 />
 
             <TextView
                 android:id="@+id/friend_email"
-                android:layout_width="270dp"
+                android:layout_width="237dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:fontFamily="@font/sfheavy"
-                android:text="Email"
+                android:hint="No email"
                 android:textColor="#555555"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -71,7 +79,6 @@
             android:textSize="16sp"
             android:textColor="@color/black"
             android:padding="8dp"
-            android:layout_marginLeft="8dp"
             android:fontFamily="@font/sfheavy" />
 
         <TextView
@@ -82,7 +89,6 @@
             android:fontFamily="@font/sfheavy"
             android:padding="8dp"
             android:text="money"
-            android:textColor="@color/black"
             android:textSize="16sp" />
 
         <Button
@@ -90,8 +96,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/payButton"
             android:text="Paid"
-            android:layout_marginLeft="70dp"
-            android:background="@drawable/button_rectangle"
+            android:layout_marginLeft="73dp"
             android:textSize="16sp"
             android:fontFamily="@font/sfheavy"
             android:layout_gravity="" />

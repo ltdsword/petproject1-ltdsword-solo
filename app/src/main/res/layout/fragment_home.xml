@@ -64,7 +64,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:fontFamily="@font/sfheavy"
-                android:hint="Price"
+                android:hint="Giá"
+                android:gravity="center"
                 android:padding="8dp"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -82,10 +83,42 @@
         <ListView
             android:id="@+id/listView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginTop="16dp"
-            android:divider="@android:color/darker_gray"
+            android:maxHeight="300dp"
+            android:divider="@color/white"
             android:dividerHeight="4dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp" >
+
+            <Button
+                android:id="@+id/addFriendButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thêm bạn"
+                android:layout_marginStart="8dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/white" /> <!-- Optional text color -->
+
+
+            <Button
+                android:id="@+id/apply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
+                android:text="Áp dụng"
+                android:textStyle="bold"
+                android:textColor="@color/redder"
+                android:textSize="16sp"
+                android:fontFamily="@font/sfheavy"
+                android:backgroundTint="@color/pink"/>
+        </LinearLayout>
 
         <Button
             android:layout_width="wrap_content"
@@ -94,33 +127,9 @@
             android:text="Chọn hết"
             android:backgroundTint="@color/teal_200"
             android:textColor="@color/black"
-            android:layout_marginLeft="8dp"
+            android:fontFamily="@font/sfheavy"
+            android:layout_marginLeft="20dp"
             android:textSize="14sp"
             />
-
-        <Button
-            android:id="@+id/addFriendButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add Friend"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:background="@drawable/button_rectangle"
-            android:textColor="@color/white" /> <!-- Optional text color -->
-
-
-        <Button
-            android:id="@+id/apply"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:text="Apply"
-            android:textStyle="bold"
-            android:textColor="@color/redder"
-            android:textSize="16sp"
-            android:fontFamily="@font/sfbold"
-            android:backgroundTint="@color/pink"/>
     </LinearLayout>
 </ScrollView>

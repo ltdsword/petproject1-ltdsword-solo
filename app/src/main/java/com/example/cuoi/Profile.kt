@@ -1,5 +1,7 @@
 package com.example.cuoi
 
+import android.util.Log
+
 data class Object(val name: String, val price: Int, val date: String)
 
 class History {
@@ -44,35 +46,41 @@ class History {
 
 
 class Friend(var name: String, var email: String, var phoneNumber: String) {
-    private val colors = arrayOf(
-        R.color.black, R.color.redder, R.color.red,
-        R.color.orange, R.color.yellow, R.color.purple_700,
-        R.color.purple_500, R.color.purple_200, R.color.blue,
-        R.color.teal_700, R.color.teal_200, R.color.greener,
-        R.color.green, R.color.grey)
 
-    private val level = arrayOf(
-        3000000, 1000000, 700000, 500000, 300000,
-        200000, 150000, 120000, 100000, 70000,
-        50000, 20000, 5000, 0
+    private val colors = arrayOf(
+        R.color.grey, R.color.green, R.color.greener,
+        R.color.teal_200, R.color.teal_700, R.color.blue,
+        R.color.purple_200, R.color.purple_500, R.color.purple_700,
+        R.color.yellow, R.color.orange, R.color.red,
+        R.color.redder, R.color.black
     )
-    init {
-        colors.reverse()
-        level.reverse()
-    }
+
+    private var level = arrayOf(
+        10000, 20000, 50000, 70000, 100000, 120000, 150000,
+        200000, 300000, 500000, 700000, 1000000, 3000000, 5000000
+    )
 
     private val len = 14
-    private val lim = 3000000
+    private val lim = 5000000
     var hist = History()
+    var index = 0
     var color = R.color.grey
 
+    fun syncLevel() {
+        level = arrayOf(
+            10000, 20000, 50000, 70000, 100000, 120000, 150000,
+            200000, 300000, 500000, 700000, 1000000, 3000000, 5000000
+        )
+    }
+
     fun sync() {
-        val index = level.binarySearch(hist.getTotal())
-        color = if (index >= 0) {
-            colors[index]
-        } else {
-            colors[len-1]
+        for (i in 0 until len) {
+            if (hist.getTotal() < level[i]) {
+                index = i
+                break
+            }
         }
+        color = colors[index]
     }
 }
 
