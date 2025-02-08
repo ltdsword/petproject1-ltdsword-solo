@@ -4,46 +4,57 @@ Le Tien Dat, Advanced Program in Computer Science. <br/>
 Faculity of Information Teachnology, University of Science - VNU-HCM.
 
 This is a pet-project coming from the need in calculating and summarizing informations (loans, money,...) in real life. <br/>
-**Note: This application is only available on Android.
+**Note: This application is only available on Android, so I'm so sorry to iPhone's fans.
 
-Some features of the app:
+### How to Install the App:
 
-1. Main activity: When a person start to add the money: (Home fragment)
+1. Enable Unknown Sources:
+    - Go to Settings > Security > Install unknown apps.
+    - Allow installation from the browser or file manager.
+2. Download and open the APK file in Github Release section.
+3. Tap Install to install the app.
+
+### Some features of the app:
+
+1. Register and Login section:
+    - All the data are stored in the Firebase Database, so you can get access to your account everywhere.
+    - You will need an email to register, since email verification is compulsory.
+
+2. Main activity: When a person start to add the money: (Home fragment)
 	- Choose from the memory cache places that they have saved
 	- Create a new place
-	- Add the friends who have owe you the money
+	- Add the price into the friends who have owe you the money.
+    - If your friend has any extra money, type it into the "Extra" section.
 	- If the friend has not been in the list, you can add a new one easily.
 
+3. Statistic: Handle the lend money (in the Statistic Fragment)
+	- Display the amount of money you lend others.
+	- List out the accounts along with their debt.
+    - List out their debt details by clicking "Hist" button
+    - Mark a friend pay your money or not.
+    - You can assign a friend with an email (email verification required), then you can notify via an email to remind him.
+    - You can only send email to him/her each 24 hours.
 
-2. Statistic: Handle the lend money (in the Statistic Fragment)
-	- Display the amount of money you lend others (or the money u borrow)
-	- Rank the people that u lend/borrow the money 
-
-3. Add new people: Name, Profile image, Gender, Age, link w/ other profile, Email,...
-
-4. Loan/Borrow Handling:
-	- Kind of loan/borrow:
-		+ List of favorite spots and default money(can be modified)
-		+ Checklist of people that need to pay u money
-		+ Apply changes
-	
-	- If they have transfer the money:
-		+ Subtract the money
-		+ Apply changes
-
-5. Setttings: (settings fragment)
+4. Setttings: (settings fragment)
 	- Change password
 	- Change username
-	- Change other features: background, images, age, gender, email, ....
+    - Modify your cache list
+	- Change other features: bank account, bank name, phone number,...
+	
+5. Easter egg
+	- In the "About" fragment, click on "OK" button; it will display something interesting...
+	
+6. Advanced features:
+	- Store the favorite spots and its money in a "cache"
+    - Email verification using SendGrid.
+    - Data saving using Firebase Database.
+    - The color of your friend also changes based on the money he/she owns you.
 
-6. Notifications
-	- Can notify other to pay u money if they install this one (via email or noti on smartphone)
-	
-7. Easter egg
-	- Press the increase volume button on the phone -> display troll images
-	- Or you can enter the "About" fragment on the navigation pane -> more troll images!
-	
-8. Advanced features:
-	- Use voice recognition to change the money or loan (not yet)
-	- Store the favorite spots and its money. (processing...)
+Thank you for reading till this. Hope you enjoy using my app. <br/>
+Since this is my first project about Android development, errors or bugs are unavoidable.
+
+If you spot any errors, bugs or improvements, please don't mind contacting me via:
+
+    - facebook: https://www.facebook.com/ltd.sword <br/>
+    - gmail: ltdsp1514@gmail.com or ltdat23@apcs.fitus.edu.vn
 
