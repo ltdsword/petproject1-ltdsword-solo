@@ -1,5 +1,6 @@
 package com.example.cuoi
 
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -9,36 +10,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.content.Context
-import android.content.SharedPreferences
-import android.util.Log
 import android.view.Gravity
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.ListPopupWindow
 import android.widget.ListView
-import android.widget.Spinner
-import android.os.Build
-import android.text.Editable
-import android.text.TextWatcher
+import android.widget.ProgressBar
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class StatisticsFragment : Fragment() {
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,23 +39,54 @@ class StatisticsFragment : Fragment() {
     }
 
     private lateinit var username: String
-    private lateinit var profileManager: ProfileManager
-    private lateinit var profiles: MutableMap<String, Profile>
     private lateinit var profile: Profile
-    private lateinit var friends: MutableList<Friend>
+    private var friends: MutableList<Friend> = mutableListOf()
+
+    private val profileManagement = ProfileManagement()
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
+        val progressText = view.findViewById<TextView>(R.id.progressText)
+        val mainContent = view.findViewById<LinearLayout>(R.id.mainContent)
+
+        progressBar.visibility = View.VISIBLE
+        progressText.visibility = View.VISIBLE
+        mainContent.visibility = View.GONE
+
+        val animator = ObjectAnimator.ofInt(progressBar, "progress", 0, 100)
+        animator.duration = 400
+
+        animator.addUpdateListener { animation ->
+            val progress = animation.animatedValue as Int
+            progressText.text = "Loading: $progress%"
+        }
+
+        animator.start()
+
         val data = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
         username = data.getString("username", null) ?: return
-        profileManager = ProfileManager(requireContext())
-        profiles = profileManager.loadProfiles()
-        profile = profiles[username] ?: return
+        lifecycleScope.launch(Dispatchers.IO) {
+            val profileTemp = profileManagement.getProfile(username)
+            withContext(Dispatchers.Main) {
+                if (profileTemp != null) {
+                    profile = profileTemp
+                    progressBar.visibility = View.GONE
+                    progressText.visibility = View.GONE
+                    mainContent.visibility = View.VISIBLE
+                    setupUI(view)
+                } else {
+                    return@withContext
+                }
+            }
+        }
+    }
 
-        val cache = profile.getCache()
-        friends = profile.getFriends()
+    @SuppressLint("SetTextI18n")
+    private fun setupUI(view: View) {
+        friends = profile.friends.toMutableList()
 
         val currentTotalMoney = view.findViewById<TextView>(R.id.currentMoney)
         currentTotalMoney.text = profile.getTotal().toString() + " VND"
@@ -74,35 +96,22 @@ class StatisticsFragment : Fragment() {
             friends[i].sync()
         }
         val listView: ListView = view.findViewById(R.id.listView)
-        val friendAdapter = FriendStatAdapter(requireContext(), friends, view)
+        val friendAdapter = FriendStatAdapter(requireContext(), friends, profile, view)
         listView.adapter = friendAdapter
-    }
-
-    private fun setListViewHeight(listView: ListView) {
-        val listViewAdapter = listView.adapter ?: return
-        var totalHeight = 0
-        for (i in 0 until listViewAdapter.count) {
-            val listItem = listViewAdapter.getView(i, null, listView)
-            listItem.measure(0, 0)
-            totalHeight += listItem.measuredHeight
-        }
-        val params = listView.layoutParams
-        params.height = totalHeight + (listView.dividerHeight * (listViewAdapter.count - 1))
-        listView.layoutParams = params
-        listView.requestLayout()
     }
 }
 
 
-class FriendStatAdapter(context: Context, private val friends: MutableList<Friend>, private val fragmentView: View) :
+class FriendStatAdapter(context: Context, private val friends: MutableList<Friend>, private val profile: Profile, private val fragmentView: View) :
     ArrayAdapter<Friend>(context, 0, friends) {
 
+        private val profileManagement = ProfileManagement()
 
     @SuppressLint("SetTextI18n", "ResourceAsColor")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         // Get the current Friend object
         var friend = friends[position]
-        val money = friend.hist.getTotal()
+        val money = friend.hist.total
 
         // Inflate the view if it's not already created
         val view = convertView ?: LayoutInflater.from(context)
@@ -120,15 +129,12 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
         emailBox.text = friend.email
         moneyText.text = money.toString()
 
-        Log.d("MyTag", "position: $position, friend.color: ${friend.index}, total: ${friend.hist.getTotal()}")
-
         nameBox.setTextColor(ContextCompat.getColor(context, friend.color))
         moneyText.setTextColor(ContextCompat.getColor(context, friend.color))
 
         if (money != 0) {
             paidButton.setBackgroundColor(ContextCompat.getColor(context, R.color.teal_700))
         }
-
 
         // Change Info button
         val changeInfoButton = view.findViewById<ImageButton>(R.id.changeButton)
@@ -197,6 +203,39 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
             } else {
                 expand(historyContainer)
                 loadHistory(historyTable, friend)
+            }
+        }
+
+        // notify button
+        val notifyButton = view.findViewById<Button>(R.id.notifyFriend)
+        if (!friend.verified) {
+            notifyButton.text = "Verify"
+        }
+
+        notifyButton.setOnClickListener {
+            if (friend.verified) {
+                if (friend.hist.total == 0) {
+                    Toast.makeText(context, "He/She owes you nothing!", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                val sendNotification = SendNotification()
+                sendNotification.sendNotification(context, friend.email, profile, friend)
+            }
+            else {
+                val emailVerify = EmailVerify()
+                if (emailVerify.isValidEmail(emailEditText.text.toString())) {
+                    emailVerify.showEmailVerificationDialog(context, emailEditText.text.toString()) { isVerified ->
+                        if (isVerified) {
+                            friend.verified = true
+                            notifyButton.text = "Notify"
+                            friends[position] = friend
+                            sync(fragmentView.findViewById(R.id.listView))
+                        }
+                    }
+                }
+                else {
+                    Toast.makeText(context, "Invalid email!", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -295,11 +334,6 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
 
     @SuppressLint("SetTextI18n")
     private fun sync(listView: ListView) {
-        val data = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-        val username = data.getString("username", null) ?: return
-        val profileManager = ProfileManager(context)
-        val profiles = profileManager.loadProfiles()
-        val profile = profiles[username] ?: return
         val currentTotalMoney = fragmentView.findViewById<TextView>(R.id.currentMoney)
         currentTotalMoney.text = profile.getTotal().toString() + " VND"
 
@@ -307,7 +341,7 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
             val view = listView.getChildAt(i) ?: continue
             val moneyText = view.findViewById<TextView>(R.id.money)
             val nameText = view.findViewById<TextView>(R.id.friend_name)
-            val money = friends[i].hist.getTotal()
+            val money = friends[i].hist.total
 
             friends[i].sync()
             moneyText.text = money.toString()
@@ -315,8 +349,7 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
             moneyText.setTextColor(ContextCompat.getColor(context, friends[i].color))
         }
 
-        profile.setFriends(friends)
-        profiles[username] = profile
-        profileManager.saveProfiles(profiles)
+        profile.friends = friends.toList()
+        profileManagement.saveProfile(profile)
     }
 }

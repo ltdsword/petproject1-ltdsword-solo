@@ -1,135 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomeFragment">
 
-    <!-- It can have only ONE direct child, so i have to include just 1 LinearLayout -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Loading Indicator (Initially Visible) -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:progress="0"
+        android:layout_gravity="center"
+        android:max="100"
+        android:progressDrawable="@drawable/progress_bar"
+        android:layout_marginTop="25dp"/>
 
-        <TextView
-            android:id="@+id/greeting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginLeft="8dp"
-            android:text="Good"
-            android:fontFamily="@font/sfheavy"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+    <TextView
+        android:id="@+id/progressText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:text="Loading: 0%"
+        android:textSize="16sp"
+        android:fontFamily="@font/sfheavy"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
 
-        <TextView
-            android:id="@+id/username"
+    <!-- Main UI (Initially Hidden) -->
+    <ScrollView
+        android:id="@+id/mainContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Datdeptrai"
-            android:padding="8dp"
-            android:fontFamily="@font/fleurdeleah"
-            android:textStyle="bold"
-            android:textColor="@color/red"
-            android:textSize="30sp" />
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="1dp" >
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <AutoCompleteTextView
-                android:id="@+id/cache_autocomplete"
+            <TextView
+                android:id="@+id/greeting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="8dp"
+                android:text="Good"
+                android:fontFamily="@font/sfheavy"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Datdeptrai"
                 android:padding="8dp"
+                android:fontFamily="@font/fleurdeleah"
+                android:textStyle="bold"
+                android:textColor="@color/red"
+                android:textSize="30sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="1dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/cache_autocomplete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:layout_marginLeft="30dp"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/sfheavy"
+                    android:hint="What do you eat today?"
+                    android:inputType="text"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:dropDownHeight="wrap_content"
+                    android:dropDownVerticalOffset="4dp"
+                    android:dropDownHorizontalOffset="0dp"
+                    android:dropDownWidth="match_parent"
+                    android:focusableInTouchMode="true"/>
+
+                <EditText
+                    android:id="@+id/price"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:fontFamily="@font/sfheavy"
+                    android:hint="Price"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="33dp"
                 android:layout_marginLeft="30dp"
-                android:textSize="16sp"
                 android:fontFamily="@font/sfheavy"
-                android:hint="What do you eat today?"
-                android:inputType="text"
-                android:focusable="true"
-                android:clickable="true"
-                android:dropDownHeight="wrap_content"
-                android:dropDownVerticalOffset="4dp"
-                android:dropDownHorizontalOffset="0dp"
-                android:dropDownWidth="match_parent"
-                android:focusableInTouchMode="true"
-                />
+                android:text="Apply this for next time"
+                android:checked="true"
+                android:textSize="12sp" />
 
-            <EditText
-                android:id="@+id/price"
-                android:layout_width="100dp"
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="16dp"
+                android:maxHeight="300dp"
+                android:divider="@color/white"
+                android:dividerHeight="4dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <Button
+                    android:id="@+id/addFriendButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Add Friend"
+                    android:layout_marginStart="8dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"/>
+
+                <Button
+                    android:id="@+id/apply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="80dp"
+                    android:text="Apply"
+                    android:textStyle="bold"
+                    android:textColor="@color/redder"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/sfheavy"
+                    android:backgroundTint="@color/pink"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/chooseAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose All"
+                android:backgroundTint="@color/teal_200"
+                android:textColor="@color/black"
+                android:fontFamily="@font/sfheavy"
                 android:layout_marginLeft="20dp"
-                android:fontFamily="@font/sfheavy"
-                android:hint="Price"
-                android:gravity="center"
-                android:padding="8dp"
-                android:textSize="16sp" />
+                android:textSize="15sp"/>
         </LinearLayout>
+    </ScrollView>
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="33dp"
-            android:layout_marginLeft="30dp"
-            android:id="@+id/checkbox"
-            android:fontFamily="@font/sfheavy"
-            android:text="Apply this for next time"
-            android:checked="true"
-            android:textSize="12sp" />
-
-        <ListView
-            android:id="@+id/listView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="16dp"
-            android:maxHeight="300dp"
-            android:divider="@color/white"
-            android:dividerHeight="4dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="12dp" >
-
-            <Button
-                android:id="@+id/addFriendButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add Friend"
-                android:layout_marginStart="8dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white" /> <!-- Optional text color -->
-
-
-            <Button
-                android:id="@+id/apply"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="80dp"
-                android:text="Apply"
-                android:textStyle="bold"
-                android:textColor="@color/redder"
-                android:textSize="16sp"
-                android:fontFamily="@font/sfheavy"
-                android:backgroundTint="@color/pink"/>
-        </LinearLayout>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/chooseAll"
-            android:text="Choose All"
-            android:backgroundTint="@color/teal_200"
-            android:textColor="@color/black"
-            android:fontFamily="@font/sfheavy"
-            android:layout_marginLeft="20dp"
-            android:textSize="15sp"
-            />
-    </LinearLayout>
-</ScrollView>
+</FrameLayout>

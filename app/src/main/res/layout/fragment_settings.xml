@@ -1,29 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".SettingsFragment">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:orientation="vertical"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="20dp" >
-
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:progress="0"
+            android:layout_gravity="center"
+            android:visibility="visible"
+            android:max="100"
+            android:progressDrawable="@drawable/progress_bar"
+            android:layout_marginTop="25dp"/>
 
         <TextView
+            android:id="@+id/progressText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/baseline_settings_24"
-            android:text="  Settings"
-            android:layout_marginStart="10dp"
-            android:fontFamily="@font/sflight"
-            android:textSize="30sp"
-            />
+            android:layout_gravity="center"
+            android:text="Loading: 0%"
+            android:visibility="visible"
+            android:textSize="16sp"
+            android:fontFamily="@font/sfheavy"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/mainContent"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -31,133 +42,238 @@
             android:padding="8dp"
             android:orientation="vertical"
             android:layout_marginTop="30dp"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/border"
-            >
+            android:layout_marginStart="20dp" >
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Change the username"
-                android:textSize="16sp"
-                android:fontFamily="@font/sfheavy"
-                android:layout_marginTop="0dp"
+                android:drawableStart="@drawable/baseline_settings_24"
+                android:text="  Settings"
                 android:layout_marginStart="10dp"
+                android:fontFamily="@font/sflight"
+                android:textSize="30sp"
                 />
-
-            <EditText
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/newUsername"
-                android:padding="8dp"
-                android:layout_marginStart="10dp"
-                android:hint="New username"
-                android:fontFamily="@font/sfheavy"
-                android:textSize="16sp" />
-
-            <EditText
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/passwordToChangeUsername"
-                android:padding="8dp"
-                android:layout_marginStart="10dp"
-                android:hint="Password"
-                android:inputType="textPassword"
-                android:fontFamily="@font/sfheavy"
-                android:textSize="16sp" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Change"
-                android:id="@+id/applyToChangeUsername"
-                android:fontFamily="@font/sfheavy"
-                android:layout_marginStart="10dp" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:orientation="vertical"
-            android:layout_marginTop="30dp"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/border"
-            >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Change the password"
-                android:textSize="16sp"
-                android:fontFamily="@font/sfheavy"
-                android:layout_marginTop="0dp"
+                android:text="  Change base information"
+                android:drawableStart="@drawable/baseline_edit_square_24"
+                android:textSize="24sp"
+                android:layout_marginTop="20dp"
                 android:layout_marginStart="10dp"
-                />
+                android:fontFamily="@font/sflight" />
 
-            <EditText
-                android:layout_width="250dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/currentPassword"
                 android:padding="8dp"
-                android:layout_marginStart="10dp"
-                android:inputType="textPassword"
-                android:hint="Current password"
-                android:fontFamily="@font/sfheavy"
-                android:textSize="16sp" />
+                android:orientation="vertical"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/border"
+                >
 
-            <EditText
-                android:layout_width="250dp"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Change the username"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/sfheavy"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginStart="10dp"
+                    />
+
+                <EditText
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/newUsername"
+                    android:padding="8dp"
+                    android:layout_marginStart="10dp"
+                    android:hint="New username"
+                    android:fontFamily="@font/sfheavy"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/passwordToChangeUsername"
+                    android:padding="8dp"
+                    android:layout_marginStart="10dp"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:fontFamily="@font/sfheavy"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Change"
+                    android:id="@+id/applyToChangeUsername"
+                    android:fontFamily="@font/sfheavy"
+                    android:layout_marginStart="10dp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/newPassword"
                 android:padding="8dp"
+                android:orientation="vertical"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/border"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Change the password"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/sfheavy"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginStart="10dp"
+                    />
+
+                <EditText
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/currentPassword"
+                    android:padding="8dp"
+                    android:layout_marginStart="10dp"
+                    android:inputType="textPassword"
+                    android:hint="Current password"
+                    android:fontFamily="@font/sfheavy"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/newPassword"
+                    android:padding="8dp"
+                    android:layout_marginStart="10dp"
+                    android:hint="New password"
+                    android:inputType="textPassword"
+                    android:fontFamily="@font/sfheavy"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Change"
+                    android:id="@+id/applyChangePassword"
+                    android:fontFamily="@font/sfheavy"
+                    android:layout_marginStart="10dp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  Customize the memory"
+                android:drawableStart="@drawable/baseline_edit_square_24"
+                android:textSize="24sp"
+                android:layout_marginTop="20dp"
                 android:layout_marginStart="10dp"
-                android:hint="New password"
-                android:inputType="textPassword"
-                android:fontFamily="@font/sfheavy"
-                android:textSize="16sp" />
+                android:fontFamily="@font/sflight" />
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:id="@+id/listView"
+                android:nestedScrollingEnabled="true"
+                android:padding="8dp"
+                android:maxHeight="400dp"
+                android:divider="@color/white"
+                android:dividerHeight="3dp" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Change"
-                android:id="@+id/applyChangePassword"
+                android:id="@+id/applyCacheList"
+                android:text="Apply"
+                android:layout_gravity="end"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/sfheavy" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  Other information"
+                android:drawableStart="@drawable/baseline_info_24"
+                android:textSize="24sp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/sflight" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bank account: "
+                android:padding="8dp"
+                android:layout_marginStart="10dp"
                 android:fontFamily="@font/sfheavy"
-                android:layout_marginStart="10dp" />
+                android:textSize="16sp" />
+
+            <EditText
+                android:layout_width="245dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/border"
+                android:fontFamily="@font/roboto_medium"
+                android:id="@+id/bankAccount"
+                android:hint="Enter your bank account..."
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bank name: "
+                android:padding="8dp"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/sfheavy"
+                android:textSize="16sp" />
+
+            <EditText
+                android:layout_width="245dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/border"
+                android:id="@+id/bankName"
+                android:fontFamily="@font/roboto_medium"
+                android:hint="Enter your bank name..."
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone number: "
+                android:padding="8dp"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/sfheavy"
+                android:textSize="16sp" />
+
+            <EditText
+                android:layout_width="245dp"
+                android:layout_height="wrap_content"
+                android:hint="Enter your phone number... "
+                android:fontFamily="@font/roboto_medium"
+                android:background="@drawable/border"
+                android:id="@+id/phoneNumber"
+                android:padding="8dp"
+                android:layout_marginStart="15dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Apply"
+                android:id="@+id/applyOtherInformation"
+                android:fontFamily="@font/sfheavy"
+                android:layout_gravity="end"
+                android:layout_marginTop="15dp" />
         </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="  Customize the memory"
-            android:drawableStart="@drawable/baseline_edit_square_24"
-            android:textSize="24sp"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="10dp"
-            android:fontFamily="@font/sflight" />
-
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:id="@+id/listView"
-            android:nestedScrollingEnabled="true"
-            android:padding="8dp"
-            android:maxHeight="400dp"
-            android:divider="@color/white"
-            android:dividerHeight="3dp" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/applyCacheList"
-            android:text="Apply"
-            android:layout_gravity="end"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            android:fontFamily="@font/sfheavy" />
-
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
+</FrameLayout>

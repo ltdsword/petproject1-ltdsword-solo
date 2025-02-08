@@ -1,5 +1,6 @@
 package com.example.cuoi
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
@@ -7,25 +8,28 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Spinner
 import android.content.Context
 import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.ListPopupWindow
 import android.widget.ListView
+import android.widget.ProgressBar
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -55,26 +59,62 @@ class HomeFragment : Fragment() {
     private lateinit var prices: List<Int>
     private lateinit var cacheList: List<String>
     private lateinit var checkBox: CheckBox
-    private lateinit var profiles: MutableMap<String, Profile>
-    private lateinit var profileManager: ProfileManager
     private lateinit var profile: Profile
     private lateinit var username: String
 
+    private val profileManagement = ProfileManagement()
+
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("DefaultLocale", "SimpleDateFormat", "SetTextI18n", "DiscouragedPrivateApi",
-        "ResourceAsColor"
+        "ResourceAsColor", "Recycle"
     )
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val data = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-        username = data.getString("username", null) ?: return
-        profileManager = ProfileManager(requireContext())
-        profiles = profileManager.loadProfiles()
-        profile = profiles[username] ?: return
+        val startTime = System.currentTimeMillis() // Start timer
+        val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
+        val progressText = view.findViewById<TextView>(R.id.progressText)
+        val mainContent = view.findViewById<ScrollView>(R.id.mainContent)
 
-        cache = profile.getCache()
-        friends = profile.getFriends()
+        progressBar.visibility = View.VISIBLE
+        progressText.visibility = View.VISIBLE
+        mainContent.visibility = View.GONE
+
+        val animator = ObjectAnimator.ofInt(progressBar, "progress", 0, 100)
+        animator.duration = 400
+
+        animator.addUpdateListener { animation ->
+            val progress = animation.animatedValue as Int
+            progressText.text = "Loading: $progress%"
+        }
+
+        animator.start()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val data = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+            username = data.getString("username", null) ?: return@launch
+            val profileTemp = profileManagement.getProfile(username)
+            Log.d("Performance", "GetProfile execution time: ${System.currentTimeMillis() - startTime} ms")
+            withContext(Dispatchers.Main) {
+                if (profileTemp != null) {
+                    profile = profileTemp
+                    Log.d("Performance", "Dispatch execution time: ${System.currentTimeMillis() - startTime} ms")
+                    progressBar.visibility = View.GONE
+                    progressText.visibility = View.GONE
+                    mainContent.visibility = View.VISIBLE
+                    setupUI(view)
+                } else {
+                    return@withContext
+                }
+                Log.d("Performance", "onViewCreated execution time: ${System.currentTimeMillis() - startTime} ms")
+            }
+        }
+    }
+
+    @SuppressLint("SimpleDateFormat", "SetTextI18n", "DefaultLocale")
+    private fun setupUI(view: View) {
+        cache = profile.cache.toMutableMap()
+        friends = profile.friends.toMutableList()
 
         // set the greetings and username ///////////////////////////////////////
         val formatter = SimpleDateFormat("HH") // "HH" for 24-hour format, "hh" for 12-hour format
@@ -108,7 +148,6 @@ class HomeFragment : Fragment() {
         prices = cache.values.toList()
         places = cache.keys.toList()
 
-        // Custom Array Adapter
         adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_dropdown_item_1line,
@@ -126,9 +165,8 @@ class HomeFragment : Fragment() {
             autoCompleteTextView.showDropDown()
         }
 
-        var priceSelected = -1
-        var placeSelected = ""
-        //println(autoCompleteTextView.text.toString())
+        var priceSelected: Int
+        var placeSelected: String
 
         autoCompleteTextView.setOnItemClickListener { _, _, position, _ ->
             placeSelected = adapter.getItem(position) ?: ""
@@ -148,18 +186,8 @@ class HomeFragment : Fragment() {
             }
             priceSelected = priceBox.text.toString().toIntOrNull() ?: 0
         }
-        // DropDownList finished ///////////////////////////////////////////////////
-
-        // CheckBox config ////////////////////////////////////////////////////////
         checkBox = view.findViewById<CheckBox>(R.id.checkbox)
-
-        var flag = false;
-        if (!checkBox.isChecked) {
-            flag = true
-        }
-        if (flag) {
-            checkBox.text = "ok Nhựt"
-        }
+        // DropDownList finished ///////////////////////////////////////////////////
 
         // ListView of Friends ////////////////////////////////////////////////////
         for (i in 0 until friends.size) {
@@ -185,7 +213,6 @@ class HomeFragment : Fragment() {
 
         // Add Friend ///////////////
         val addFriendButton = view.findViewById<Button>(R.id.addFriendButton)
-        addFriendButton.setBackgroundColor(R.color.grey)
         addFriendButton.setOnClickListener {
             addFriend(friendAdapter, listView, friends)
         }
@@ -224,12 +251,13 @@ class HomeFragment : Fragment() {
         val priceList = friendAdapter.getData(listView)
         for (i in 0 until priceList.size) {
             if (priceList[i] != 0) {
-                friends[i].hist.addObject(formattedTime, placeSelected, priceSelected)
+                friends[i].hist.addObject(formattedTime, placeSelected, priceList[i])
                 friends[i].sync()
             }
         }
         if (checkBox.isChecked) {
             if (placeSelected != "" && priceSelected != 0) profile.addCache(placeSelected, priceSelected)
+            cache = profile.cache.toMutableMap()
             cacheList = cache.map {(place, price) -> "$place: ${String.format("%d", price)}"}
             prices = cache.values.toList()
             places = cache.keys.toList()
@@ -238,11 +266,9 @@ class HomeFragment : Fragment() {
             adapter.addAll(cacheList)
             adapter.notifyDataSetChanged()
         }
-        profile.setFriends(friends)
-        profiles[username] = profile
-        profileManager.saveProfiles(profiles)
-        /////////////////////////////
-        // Toast.makeText(requireContext(), "Saved 6a6y", Toast.LENGTH_SHORT).show()
+        profile.friends = friends.toList()
+        profileManagement.saveProfile(profile)
+
         // reset all
         friendAdapter.reset(listView)
         autoCompleteTextView.setText("")
@@ -304,15 +330,8 @@ class HomeFragment : Fragment() {
                 if (name.isNotBlank()) {
                     val newFriend = Friend(name, email, "")
                     newFriend.color = R.color.grey
-                    Log.d("MyTag", "prev. size: $friends.size")
                     friends.add(newFriend)
-                    Log.d("MyTag", "size: $friends.size")
 
-                    // update the friend adapter
-//                    friendAdapter.clear()
-//                    Log.d("MyTag", "1: $friends.size")
-//                    friendAdapter.addAll(friends)
-//                    Log.d("MyTag", "2: $friends.size")
                     friendAdapter.notifyDataSetChanged() // Update ListView
                     setListViewHeight(listView)
                     listView.invalidateViews()

@@ -9,6 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Name"
+        android:background="@drawable/border"
+        android:padding="12dp"
+        android:fontFamily="@font/roboto_medium"
         android:inputType="textPersonName" />
 
     <EditText
@@ -16,5 +19,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
+        android:background="@drawable/border"
+        android:padding="12dp"
+        android:fontFamily="@font/roboto_medium"
+        android:layout_marginTop="15dp"
         android:inputType="textEmailAddress" />
 </LinearLayout>

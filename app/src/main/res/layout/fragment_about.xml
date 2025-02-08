@@ -3,12 +3,189 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".AboutFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mainContent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="  About"
+            android:id="@+id/title"
+            android:fontFamily="@font/sflight"
+            android:textSize="35sp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:drawableStart="@drawable/baseline_info_24" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:text="App Name "
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Money Management App"
+                android:layout_gravity="end"
+                android:fontFamily="@font/sfheavy"
+                android:textSize="15dp"
+                android:layout_marginEnd="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:text="Developer "
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Le Tien Dat (ltdsword)"
+                android:layout_gravity="end"
+                android:fontFamily="@font/sfheavy"
+                android:textSize="15dp"
+                android:layout_marginEnd="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:text="School "
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="University of Science, VNU-HCM"
+                android:layout_gravity="end"
+                android:fontFamily="@font/sfheavy"
+                android:textSize="15dp"
+                android:layout_marginEnd="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:text="Version "
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="1.0 (Beta Testing)"
+                android:layout_gravity="end"
+                android:fontFamily="@font/sfheavy"
+                android:textSize="15dp"
+                android:layout_marginEnd="10dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:text="Release Date "
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="2025/02/08"
+                android:layout_gravity="end"
+                android:fontFamily="@font/sfheavy"
+                android:textSize="15dp"
+                android:layout_marginEnd="10dp" />
+        </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:fontFamily="@font/sfheavy"
+            android:textSize="16sp"
+            android:backgroundTint="@color/pink"
+            android:textColor="@color/redder"
+            android:id="@+id/button"
+            android:layout_gravity="end"
+            android:layout_marginEnd="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Note: This app is design as a pet-project, aim for improvements in Android coding skill and relax between friends. These actions in the app have no indication to any particular person or party."
+            android:fontFamily="@font/roboto_medium"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="10dp" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
+        android:id="@+id/trollImage"
+        android:visibility="gone"
         android:orientation="vertical" >
 
         <TextView
@@ -27,8 +204,6 @@
             android:id="@+id/image"
             android:contentDescription="Fack you everyone..."
             android:src="@drawable/suss" />
-
-
     </LinearLayout>
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.cuoi
 
+import android.media.MediaPlayer
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.os.Bundle
@@ -29,32 +30,54 @@ class AboutFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_about, container, false)
     }
 
+    private var mediaPlayer: MediaPlayer? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        colorChangingText = view.findViewById(R.id.text)
+        val mainContent = view.findViewById<ViewGroup>(R.id.mainContent)
+        val trollImage = view.findViewById<ViewGroup>(R.id.trollImage)
+        val button = view.findViewById<TextView>(R.id.button)
 
-        // Runnable that changes color every 0.15 seconds
-        val colorChangeRunnable = object : Runnable {
-            override fun run() {
-                // Change color
-                colorChangingText.setTextColor(ContextCompat.getColor(requireContext(), colors[currentColorIndex]))
+        mainContent.visibility = View.VISIBLE
+        trollImage.visibility = View.GONE
 
-                // Update to the next color
-                currentColorIndex = (currentColorIndex + 1) % colors.size
+        button.setOnClickListener {
+            mainContent.visibility = View.GONE
+            trollImage.visibility = View.VISIBLE
 
-                // Re-run the Runnable after 150ms
-                handler.postDelayed(this, 200)
+            // Initialize MediaPlayer with the music file
+            mediaPlayer = MediaPlayer.create(requireContext(), R.raw.videoplayback)
+            mediaPlayer?.isLooping = true // Set looping if you want continuous play
+            mediaPlayer?.start()
+            mediaPlayer?.setVolume(1.0f, 1.0f)
+
+            colorChangingText = view.findViewById(R.id.text)
+
+            // Runnable that changes color every 0.15 seconds
+            val colorChangeRunnable = object : Runnable {
+                override fun run() {
+                    // Change color
+                    colorChangingText.setTextColor(ContextCompat.getColor(requireContext(), colors[currentColorIndex]))
+
+                    // Update to the next color
+                    currentColorIndex = (currentColorIndex + 1) % colors.size
+
+                    // Re-run the Runnable after 150ms
+                    handler.postDelayed(this, 150)
+                }
             }
+
+            // Start changing color
+            handler.postDelayed(colorChangeRunnable, 150)
         }
 
-        // Start changing color
-        handler.postDelayed(colorChangeRunnable, 200)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         handler.removeCallbacksAndMessages(null) // Stop the color change when the view is destroyed
+        mediaPlayer?.release()
+        mediaPlayer = null
     }
 }

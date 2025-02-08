@@ -1,47 +1,89 @@
 package com.example.cuoi
-import android.content.Context
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
-class ProfileManager(private val context: Context) {
-    private val sharedPreferences = context.getSharedPreferences("DataPrefs", Context.MODE_PRIVATE)
-    private val gson = Gson()
+import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
-    private fun defaultProfile(): Profile {
-        var profile = Profile()
-        profile.name = "admin"
-        profile.email = "admin(j97bocon)@gmail.com"
-
-        val defPassword = "j97"
-        val hasher = Hasher()
-
-        // save password
-        val sharedInfo = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-        val editor = sharedInfo.edit()
-        editor.putString("user_" + profile.name, hasher.hash(defPassword))
-        editor.apply()
-
-        return profile
+class ProfileManagement {
+    fun isUsernameTaken(username: String, callback: (Boolean) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("users").document(username).get()
+            .addOnSuccessListener { document ->
+                Log.d("Firestore", "Document Exists: ${document.exists()}, Data: ${document.data}")
+                callback(document.exists()) // Returns true if the username exists
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error checking username", e)
+                callback(false)
+            }
     }
 
-    // Save the map of username to Profile
-    fun saveProfiles(profiles: MutableMap<String, Profile>) {
-        val json = gson.toJson(profiles)
-        sharedPreferences.edit().putString("profiles", json).apply()
+    private fun getProfileHelper(username: String, callback: (Profile?) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("users").document(username).get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    Log.d("Firestore", "Data: ${document.data}") // Debugging
+                    val profile = document.toObject(Profile::class.java)
+                    Log.d("Firestore", "Profile: $profile")
+                    if (profile == null) {
+                        Log.e("Firestore", "Failed to deserialize Profile")
+                    }
+                    callback(profile)
+                } else {
+                    Log.e("Firestore", "Document does not exist")
+                    callback(null)
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error fetching profile", e)
+                callback(null)
+            }
     }
 
-    // Retrieve the map of username to Profile
-    fun loadProfiles(): MutableMap<String, Profile> {
-        val json = sharedPreferences.getString("profiles", null)
-        return if (json != null) {
-            val type = object : TypeToken<MutableMap<String, Profile>>() {}.type
-            gson.fromJson(json, type)
-        } else {
-            val ret: MutableMap<String, Profile> = mutableMapOf()
-            val profile = defaultProfile()
-            ret[profile.name] = profile
-            saveProfiles(ret)
-            return ret
+    suspend fun getProfile(username: String): Profile? {
+        return suspendCoroutine { continuation ->
+            getProfileHelper(username) { profile ->
+                continuation.resume(profile)
+            }
         }
     }
+
+    fun isUsernameExist(username: String): Boolean {
+        var exist = false
+        isUsernameTaken(username) { callback ->
+            if (!callback) {
+                exist = true
+            }
+        }
+        return exist
+    }
+
+    fun saveProfile(profile: Profile) {
+        val username = profile.name
+        val db = FirebaseFirestore.getInstance()
+        db.collection("users").document(username).set(profile, SetOptions.merge())
+            .addOnSuccessListener {
+                Log.d("Firestore", "Profile saved successfully for username: $username")
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error saving profile", e)
+            }
+    }
+
+    fun deleteUsername(username: String) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("users").document(username).delete()
+            .addOnSuccessListener {
+                Log.d("Firestore", "User profile deleted successfully: $username")
+            }
+            .addOnFailureListener { e ->
+                Log.e("Firestore", "Error deleting user profile", e)
+            }
+    }
 }
+

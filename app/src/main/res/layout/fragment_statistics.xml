@@ -1,15 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".StatisticsFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Loading Indicator (Initially Visible) -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
+        android:progress="0"
+        android:layout_gravity="center"
+        android:max="100"
+        android:progressDrawable="@drawable/progress_bar"
+        android:layout_marginTop="25dp"/>
+
+    <TextView
+        android:id="@+id/progressText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:text="Loading: 0%"
+        android:textSize="16sp"
+        android:fontFamily="@font/sfheavy"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
+
+    <!-- Main UI (Initially Hidden) -->
+    <LinearLayout
+        android:id="@+id/mainContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="8dp" >
+        android:padding="8dp"
+        android:visibility="gone"> <!-- Hidden initially -->
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -27,11 +54,11 @@
                 android:textSize="18sp" />
 
             <TextView
+                android:id="@+id/currentMoney"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Current Money..."
                 android:gravity="center"
-                android:id="@+id/currentMoney"
                 android:padding="8dp"
                 android:textColor="@color/redder"
                 android:textSize="30sp" />
@@ -41,8 +68,7 @@
                 android:layout_height="wrap_content"
                 android:text="Bắt họ trả đi, không là mất đó!"
                 android:textSize="15sp"
-                android:fontFamily="@font/sfheavy"
-                />
+                android:fontFamily="@font/sfheavy"/>
         </LinearLayout>
 
         <TextView
@@ -57,10 +83,11 @@
         <ListView
             android:id="@+id/listView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginTop="10dp"
             android:divider="@android:color/darker_gray"
             android:dividerHeight="4dp" />
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>

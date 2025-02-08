@@ -30,19 +30,18 @@
 
             <TextView
                 android:id="@+id/friend_name"
-                android:layout_width="235dp"
+                android:layout_width="210dp"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:padding="8dp"
                 android:layout_marginLeft="8dp"
-                android:text="Name"
                 android:fontFamily="@font/sfheavy"
-                android:textStyle="bold"
-                />
+                android:padding="8dp"
+                android:text="Name"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/friend_email"
-                android:layout_width="237dp"
+                android:layout_width="210dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:fontFamily="@font/sfheavy"
@@ -53,16 +52,16 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/history"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/notifyFriend"
+            android:text="Notify"
+            android:background="@drawable/border"
             android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:textSize="16sp"
             android:fontFamily="@font/sfheavy"
-            android:text="Hist"
-            android:backgroundTint="@color/pink"
-            android:textSize="15sp"
-            android:textColor="@color/redder"
-            android:textStyle="bold" />
+            />
 
     </LinearLayout>
 
@@ -79,14 +78,14 @@
             android:textStyle="bold"
             android:textSize="16sp"
             android:textColor="@color/black"
-            android:padding="8dp"
+            android:padding="0dp"
             android:fontFamily="@font/sfheavy" />
 
         <TextView
             android:id="@+id/money"
-            android:layout_width="99dp"
+            android:layout_width="96dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+
             android:fontFamily="@font/sfheavy"
             android:padding="8dp"
             android:text="money"
@@ -97,10 +96,22 @@
             android:layout_height="wrap_content"
             android:id="@+id/payButton"
             android:text="Paid"
-            android:layout_marginLeft="73dp"
+            android:layout_marginLeft="0dp"
             android:textSize="16sp"
             android:fontFamily="@font/sfheavy"
-            android:layout_gravity="" />
+            />
+
+        <Button
+            android:id="@+id/history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sfheavy"
+            android:text="Hist"
+            android:backgroundTint="@color/pink"
+            android:textSize="16sp"
+            android:layout_marginLeft="12dp"
+            android:textColor="@color/redder"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

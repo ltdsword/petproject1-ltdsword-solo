@@ -13,8 +13,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Register"
+            android:text="Create an account"
             android:textSize="30sp"
+            android:fontFamily="@font/sfheavy"
             android:layout_gravity="center"/>
 
         <!-- Username Field -->
@@ -23,6 +24,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter Username"
+            android:fontFamily="@font/roboto_medium"
+            android:background="@drawable/border"
+            android:padding="12dp"
+            android:layout_marginTop="30dp"
             android:inputType="text" />
 
         <!-- Email Field -->
@@ -31,6 +36,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter Email"
+            android:fontFamily="@font/roboto_medium"
+            android:background="@drawable/border"
+            android:padding="12dp"
+            android:layout_marginTop="15dp"
             android:inputType="textEmailAddress" />
 
         <!-- Password Field -->
@@ -39,6 +48,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter Password"
+            android:fontFamily="@font/roboto_medium"
+            android:background="@drawable/border"
+            android:padding="12dp"
+            android:layout_marginTop="15dp"
             android:inputType="textPassword" />
 
         <!-- Register Button -->
@@ -46,7 +59,25 @@
             android:id="@+id/buttonRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Register" />
+            android:fontFamily="@font/roboto_bold"
+            android:background="@drawable/border"
+            android:padding="12dp"
+            android:layout_marginTop="15dp"
+            android:textSize="18sp"
+            android:text="Continue" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/loginButton"
+            android:text="Already have an account? Login"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="18sp"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:textColor="@color/purple_500"
+             />
+
 
     </LinearLayout>
 </ScrollView>

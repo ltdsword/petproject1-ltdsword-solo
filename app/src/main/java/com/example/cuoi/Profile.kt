@@ -1,13 +1,16 @@
 package com.example.cuoi
 
-import android.util.Log
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.Exclude
+import java.util.Date
 
-data class Object(val name: String, val price: Int, val date: String)
+data class Item(val name: String = "", val price: Int = 0, val date: String = "")
 
-class History {
-    private var total = 0
-    private var hist: MutableList<Object> = mutableListOf()
-
+data class History(
+    var total: Int = 0,
+    var hist: List<Item> = listOf()
+    ) {
+    @Exclude
     private fun recalculate(): Int {
         total = 0
         for (i in hist) {
@@ -16,37 +19,39 @@ class History {
         return total
     }
 
+    @Exclude
     fun addObject(date: String, name: String, price: Int) {
-        hist.add(Object(name, price, date))
+        hist = hist + (Item(name, price, date))
         total += price
     }
 
-    fun addObject(obj: Object) {
-        hist.add(obj)
-        total += obj.price
-    }
-
+    @Exclude
     fun clear() {
-        hist.clear()
+        hist = emptyList()
         total = 0
     }
 
-    fun recal() {
-        recalculate()
-    }
-
-    fun getList(): MutableList<Object> {
+    @Exclude
+    fun getList(): List<Item> {
         return hist
     }
 
-    fun getTotal(): Int {
-        return total
-    }
+//    @Exclude
+//    fun getTotal() = total
 }
 
 
-class Friend(var name: String, var email: String, var phoneNumber: String) {
-
+data class Friend(
+    var name: String = "",
+    var email: String = "",
+    var phoneNumber: String = "",
+    var hist: History = History(),
+    var index: Int = 0,
+    var color: Int = R.color.grey,
+    var verified: Boolean = false,
+    var lastSent: Long = -80000
+) {
+    @Exclude
     private val colors = arrayOf(
         R.color.grey, R.color.green, R.color.greener,
         R.color.teal_200, R.color.teal_700, R.color.blue,
@@ -55,17 +60,19 @@ class Friend(var name: String, var email: String, var phoneNumber: String) {
         R.color.redder, R.color.black
     )
 
+    @Exclude
     private var level = arrayOf(
         10000, 20000, 50000, 70000, 100000, 120000, 150000,
         200000, 300000, 500000, 700000, 1000000, 3000000, 5000000
     )
 
+    @Exclude
     private val len = 14
+    @Exclude
     private val lim = 5000000
-    var hist = History()
-    var index = 0
-    var color = R.color.grey
 
+
+    @Exclude
     fun syncLevel() {
         level = arrayOf(
             10000, 20000, 50000, 70000, 100000, 120000, 150000,
@@ -73,9 +80,10 @@ class Friend(var name: String, var email: String, var phoneNumber: String) {
         )
     }
 
+    @Exclude
     fun sync() {
         for (i in 0 until len) {
-            if (hist.getTotal() < level[i]) {
+            if (hist.total < level[i]) {
                 index = i
                 break
             }
@@ -84,82 +92,53 @@ class Friend(var name: String, var email: String, var phoneNumber: String) {
     }
 }
 
-class Profile() {
-    private var cache: MutableMap<String, Int> = mutableMapOf()
-    private var hist: MutableList<Pair<String, Int>> = mutableListOf()
-    private var friends: MutableList<Friend> = mutableListOf()
-
-    var name = ""
-    var age = 0
-    var phoneNumber = ""
-    var email = ""
-
-    private var cacheExist = false
-
-    // cache: save the destination/place in the mutable map format (place --> price)
-    // friends: save the list of friends
-
-    fun addFriend(f: Friend) {
-        friends.add(f)
-    }
-
+data class Profile(
+    var name: String = "",
+    var password: String = "",
+    var age: Int = 0,
+    var phoneNumber: String = "",
+    var email: String = "",
+    var bankAccount: String = "",
+    var bankName: String = "",
+    var cache: Map<String, Int> = mapOf(),
+    //var hist: MutableList<Pair<String, Int>> = mutableListOf(),
+    var friends: List<Friend> = listOf()
+) {
+    @Exclude
     fun addCache(place: String, price: Int) {
-        cache[place] = price
+        cache = cache + (place to price)
     }
 
-    fun addHist(place: String, price: Int) {
-        hist.add(Pair(place, price))
-    }
+//    @Exclude
+//    fun setCache(cache: MutableMap<String, Int>) {
+//        this.cache = cache
+//    }
+//
+//    @Exclude
+//    fun setFriends(friends: MutableList<Friend>) {
+//        this.friends = friends
+//    }
 
-    fun clearAllHist() {
-        hist.clear()
-    }
+//    @Exclude
+//    fun getCache(): MutableMap<String, Int> {
+//        return cache
+//    }
+//
+//    @Exclude
+//    fun getFriends(): MutableList<Friend> {
+//        return friends
+//    }
 
-    fun clearFriend(f: Friend) {
-        friends.remove(f)
-    }
+//    @Exclude
+//    fun getHist(): MutableList<Pair<String, Int>> {
+//        return hist
+//    }
 
-    fun clearFriend(index: Int) {
-        friends.removeAt(index)
-    }
-
-    fun findCache(place: String): Int? {
-        return cache[place]
-    }
-
-    fun findFriend(name: String): Friend? {
-        for (i in friends) {
-            if (i.name == name) {
-                return i
-            }
-        }
-        return null
-    }
-
-    fun setCache(cache: MutableMap<String, Int>) {
-        this.cache = cache
-    }
-
-    fun setFriends(friends: MutableList<Friend>) {
-        this.friends = friends
-    }
-
-    fun getCache(): MutableMap<String, Int> {
-        return cache
-    }
-
-    fun getFriends(): MutableList<Friend> {
-        return friends
-    }
-
-    fun getHist(): MutableList<Pair<String, Int>> {
-        return hist
-    }
-
+    @Exclude
     fun getTotal() : Int {
         var tot = 0
         for (i in friends) {
-            tot += i.hist.getTotal()
+            tot += i.hist.total
         }
         return tot
     }

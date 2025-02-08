@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "653023344104",
+    "project_id": "cuoi-9bad4",
+    "storage_bucket": "cuoi-9bad4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653023344104:android:8443def996a4b4fefd205d",
+        "android_client_info": {
+          "package_name": "com.example.cuoi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1M_MmqiOhWbsvhpDkFVqAg4gxPuxjHjE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
