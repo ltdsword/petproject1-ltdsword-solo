@@ -55,6 +55,6 @@ Since this is my first project about Android development, errors or bugs are una
 
 If you spot any errors, bugs or improvements, please don't mind contacting me via:
 
-    - facebook: https://www.facebook.com/ltd.sword <br/>
+    - facebook: https://www.facebook.com/ltd.sword
     - gmail: ltdsp1514@gmail.com or ltdat23@apcs.fitus.edu.vn
 
