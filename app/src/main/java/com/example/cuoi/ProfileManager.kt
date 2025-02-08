@@ -66,7 +66,7 @@ class ProfileManagement {
     fun saveProfile(profile: Profile) {
         val username = profile.name
         val db = FirebaseFirestore.getInstance()
-        db.collection("users").document(username).set(profile, SetOptions.merge())
+        db.collection("users").document(username).set(profile)
             .addOnSuccessListener {
                 Log.d("Firestore", "Profile saved successfully for username: $username")
             }

@@ -17,6 +17,7 @@ import android.widget.ImageButton
 import android.widget.ListView
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -155,18 +156,14 @@ class SettingsFragment : Fragment() {
                 val initPlace = cacheList[i].first
                 val initPrice = cacheList[i].second
 
-                if (place != initPlace) {
-                    cache[place] = price
-                    cache.remove(initPlace)
-                }
-                else {
-                    if (price != initPrice) {
-                        cache[place] = price
-                    }
-                }
+                Log.d("MyTag", "place: $place, price: $price, initPlace: $initPlace, initPrice: $initPrice")
+
+                cache.remove(initPlace)
+                cache[place] = price
             }
             cacheList.clear()
             cacheList.addAll(cache.toList().toMutableList())
+            Log.d("MyTag", "cacheList: $cacheList")
             profile.cache = cache.toMap()
             profileManagement.saveProfile(profile)
             adapter.notifyDataSetChanged()

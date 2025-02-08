@@ -1,11 +1,14 @@
 package com.example.cuoi
 
+import androidx.annotation.Keep
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Exclude
 import java.util.Date
 
+@Keep
 data class Item(val name: String = "", val price: Int = 0, val date: String = "")
 
+@Keep
 data class History(
     var total: Int = 0,
     var hist: List<Item> = listOf()
@@ -35,19 +38,16 @@ data class History(
     fun getList(): List<Item> {
         return hist
     }
-
-//    @Exclude
-//    fun getTotal() = total
 }
 
-
+@Keep
 data class Friend(
     var name: String = "",
     var email: String = "",
     var phoneNumber: String = "",
     var hist: History = History(),
     var index: Int = 0,
-    var color: Int = R.color.grey,
+    var color: Int = 0,
     var verified: Boolean = false,
     var lastSent: Long = -80000
 ) {
@@ -92,6 +92,7 @@ data class Friend(
     }
 }
 
+@Keep
 data class Profile(
     var name: String = "",
     var password: String = "",
@@ -100,7 +101,7 @@ data class Profile(
     var email: String = "",
     var bankAccount: String = "",
     var bankName: String = "",
-    var cache: Map<String, Int> = mapOf(),
+    var cache: Map<String, Int> = emptyMap(),
     //var hist: MutableList<Pair<String, Int>> = mutableListOf(),
     var friends: List<Friend> = listOf()
 ) {
@@ -108,31 +109,6 @@ data class Profile(
     fun addCache(place: String, price: Int) {
         cache = cache + (place to price)
     }
-
-//    @Exclude
-//    fun setCache(cache: MutableMap<String, Int>) {
-//        this.cache = cache
-//    }
-//
-//    @Exclude
-//    fun setFriends(friends: MutableList<Friend>) {
-//        this.friends = friends
-//    }
-
-//    @Exclude
-//    fun getCache(): MutableMap<String, Int> {
-//        return cache
-//    }
-//
-//    @Exclude
-//    fun getFriends(): MutableList<Friend> {
-//        return friends
-//    }
-
-//    @Exclude
-//    fun getHist(): MutableList<Pair<String, Int>> {
-//        return hist
-//    }
 
     @Exclude
     fun getTotal() : Int {
