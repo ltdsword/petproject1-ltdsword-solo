@@ -24,8 +24,9 @@ This is a pet-project coming from the need in calculating and summarizing inform
 	- Choose from the memory cache places that they have saved
 	- Create a new place
 	- Add the price into the friends who have owe you the money.
-    - If your friend has any extra money, type it into the "Extra" section.
+	- If your friend has any extra money, type it into the "Extra" section.
 	- If the friend has not been in the list, you can add a new one easily.
+	- New: Quick select button helps you to calculate the money for each person (first you have to tick all the people you need)
 
 3. Statistic: Handle the lend money (in the Statistic Fragment)
 	- Display the amount of money you lend others.
