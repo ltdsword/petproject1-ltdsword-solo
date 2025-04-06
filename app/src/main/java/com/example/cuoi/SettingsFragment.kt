@@ -85,6 +85,9 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    private val bankFetcher = BankFetcher()
+    private var banksList: List<Bank> = emptyList()
+
     private fun setupUI(view: View) {
         cache = profile.cache.toMutableMap()
         cacheList = cache.toList().toMutableList()
@@ -176,7 +179,18 @@ class SettingsFragment : Fragment() {
         val bankAccountBox = view.findViewById<EditText>(R.id.bankAccount)
         val bankNameBox = view.findViewById<EditText>(R.id.bankName)
         val phoneNumberBox = view.findViewById<EditText>(R.id.phoneNumber)
+        val nameBankButton = view.findViewById<Button>(R.id.nameBank)
         val applyOtherInformationButton = view.findViewById<Button>(R.id.applyOtherInformation)
+
+        if (profile.nameBank != "") {
+            nameBankButton.text = profile.nameBank
+        }
+
+        loadBanks(nameBankButton)
+
+        nameBankButton.setOnClickListener {
+            showBankSelectionDialog(nameBankButton)
+        }
 
         bankAccountBox.setText(profile.bankAccount)
         bankNameBox.setText(profile.bankName)
@@ -189,6 +203,49 @@ class SettingsFragment : Fragment() {
             profileManagement.saveProfile(profile)
             Toast.makeText(requireContext(), "Other information applied successfully", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun loadBanks(nameBankButton: Button) {
+        // Show loading if needed
+
+        bankFetcher.fetchBanks { banks ->
+            // Handle UI updates on the main thread using Handler
+            Handler(Looper.getMainLooper()).post {
+                if (banks != null) {
+                    banksList = banks
+                    // Enable button when banks are loaded
+                    nameBankButton.isEnabled = true
+                } else {
+                    Toast.makeText(requireContext(), "Failed to load banks", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun showBankSelectionDialog(nameBankButton: Button) {
+        if (banksList.isEmpty()) {
+            Toast.makeText(requireContext(), "No banks available", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Create array of bank names for the dialog
+        val bankNames = banksList.map { it.shortName + " - " + it.name}.toTypedArray()
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Select a Bank")
+            .setItems(bankNames) { _, which ->
+                val selectedBank = banksList[which]
+
+                // Save the selected bank data
+                profile.nameBank = bankNames[which]
+                profile.acqId = selectedBank.acqId
+
+                // Update UI to show selected bank
+                nameBankButton.text = profile.nameBank
+
+                Toast.makeText(requireContext(), "Selected: ${selectedBank.name}", Toast.LENGTH_SHORT).show()
+            }
+            .show()
     }
 
     private fun setListViewHeight(listView: ListView) {

@@ -231,7 +231,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bank name: "
+                android:text="Account name: "
                 android:padding="8dp"
                 android:layout_marginStart="10dp"
                 android:fontFamily="@font/sfheavy"
@@ -244,7 +244,27 @@
                 android:background="@drawable/border"
                 android:id="@+id/bankName"
                 android:fontFamily="@font/roboto_medium"
-                android:hint="Enter your bank name..."
+                android:hint="Enter your account name..."
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bank name: "
+                android:padding="8dp"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/sfheavy"
+                android:textSize="16sp" />
+
+            <Button
+                android:layout_width="245dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/white_border"
+                android:id="@+id/nameBank"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="16dp"
+                android:hint="Select bank..."
                 android:padding="8dp" />
 
             <TextView

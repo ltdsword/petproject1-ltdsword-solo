@@ -223,8 +223,38 @@ class HomeFragment : Fragment() {
             syncPrice(listView, priceBox, "choose_all")
         }
 
-        // Apply Changes /////////////////////////////////////////////////////////
+        // Quick Select //////////////////////////////////
+        val quickSelectButton = view.findViewById<Button>(R.id.quickSelect)
+        quickSelectButton.setOnClickListener {
+            val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.quick_choose, null)
+            val priceInput = dialogView.findViewById<EditText>(R.id.price)
+            val includeMe = dialogView.findViewById<CheckBox>(R.id.includeMe)
 
+            AlertDialog.Builder(requireContext())
+                .setTitle("Quick Selection")
+                .setView(dialogView)
+                .setPositiveButton("OK") { dialog, _ ->
+                    val price = priceInput.text.toString().toIntOrNull() ?: 0
+                    var count = 0
+                    for (i in 0 until listView.count) {
+                        val childView = listView.getChildAt(i) ?: continue
+                        val checkBox = childView.findViewById<CheckBox>(R.id.checkBoxPrice)
+                        if (checkBox.isChecked) {
+                            count++
+                        }
+                    }
+                    if (includeMe.isChecked) count++
+                    priceBox.setText((price/count).toString())
+                    syncPrice(listView, priceBox, "default")
+                    dialog.dismiss()
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
+
+        // Apply Changes /////////////////////////////////////////////////////////
         val applyButton: Button = view.findViewById(R.id.apply)
         applyButton.setOnClickListener {
             AlertDialog.Builder(requireContext())
@@ -410,6 +440,8 @@ class FriendAdapter(context: Context, private val friends: MutableList<Friend>, 
     @SuppressLint("SetTextI18n", "ResourceAsColor")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         // Get the current Friend object
+        friends[position].hist.recalculate()
+        friends[position].sync()
         val friend = friends[position]
 
         // Inflate the view if it's not already created

@@ -1,17 +1,21 @@
 package com.example.cuoi
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 
 class RegisterActivity : AppCompatActivity() {
     private val profileManagement = ProfileManagement()
     private lateinit var profile: Profile
     override fun onCreate(savedInstanceState: Bundle?) {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 

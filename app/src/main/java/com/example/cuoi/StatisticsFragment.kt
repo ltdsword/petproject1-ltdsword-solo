@@ -10,6 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.content.Context
+import android.os.Build
+import android.text.Editable
+import android.util.Log
 import android.view.Gravity
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -22,8 +25,12 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.animation.doOnEnd
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -96,19 +103,21 @@ class StatisticsFragment : Fragment() {
             friends[i].sync()
         }
         val listView: ListView = view.findViewById(R.id.listView)
-        val friendAdapter = FriendStatAdapter(requireContext(), friends, profile, view)
+        val friendAdapter = FriendStatAdapter(requireContext(), friends, profile, this, view)
         listView.adapter = friendAdapter
     }
 }
 
 
-class FriendStatAdapter(context: Context, private val friends: MutableList<Friend>, private val profile: Profile, private val fragmentView: View) :
+class FriendStatAdapter(context: Context, private val friends: MutableList<Friend>, private val profile: Profile, private val fragment: StatisticsFragment, private val fragmentView: View) :
     ArrayAdapter<Friend>(context, 0, friends) {
 
         private val profileManagement = ProfileManagement()
 
-    @SuppressLint("SetTextI18n", "ResourceAsColor")
+    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("SetTextI18n", "ResourceAsColor", "DetachAndAttachSameFragment")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        friends[position].hist.recalculate()
         // Get the current Friend object
         var friend = friends[position]
         val money = friend.hist.total
@@ -147,6 +156,16 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
         nameEditText.setText(friends[position].name)
         emailEditText.setText(friends[position].email)
 
+        emailEditText.doAfterTextChanged {
+            val email = emailEditText.text.toString()
+            if (email != friends[position].email) {
+                friends[position].email = email
+                friends[position].verified = false
+                notifyDataSetChanged()
+                sync(fragmentView.findViewById(R.id.listView))
+            }
+        }
+
         changeInfoButton.setOnClickListener {
             AlertDialog.Builder(context)
                 .setTitle("Edit Info")
@@ -177,32 +196,44 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
 
         // Pay button
         paidButton.setOnClickListener {
+            val paidDialogView = LayoutInflater.from(context).inflate(R.layout.pay_money, null)
+            val priceInput = paidDialogView.findViewById<EditText>(R.id.price)
+            val payAll = paidDialogView.findViewById<TextView>(R.id.payAll)
+            payAll.setOnClickListener {
+                priceInput.setText(moneyText.text)
+            }
             AlertDialog.Builder(context)
-                .setTitle("Confirm")
-                .setMessage("Are you sure your friend paid you?")
-                .setPositiveButton("Yeah") { _, _ ->
+                .setTitle("")
+                .setView(paidDialogView)
+                .setPositiveButton("OK") { _, _ ->
+                    val price = priceInput.text.toString().toIntOrNull() ?: 0
                     if (historyContainer.visibility == View.VISIBLE) {
                         collapse(historyContainer)
                     }
-                    friend.hist.clear()
-                    friends[position].hist.clear()
+                    friends[position].hist.minusObject(price)
                     friends[position].sync()
                     sync(fragmentView.findViewById(R.id.listView))
-                    paidButton.setBackgroundColor(ContextCompat.getColor(context, R.color.grey))
+                    if (friends[position].hist.total == 0) paidButton.setBackgroundColor(ContextCompat.getColor(context, R.color.grey))
+
+                    // Refresh the fragment
+                    val fragmentManager = (context as? FragmentActivity)?.supportFragmentManager
+                    fragmentManager?.let {
+                        it.beginTransaction().detach(fragment).attach(fragment).commit()
+                    }
                 }
-                .setNegativeButton("Uh no") { dialog, _ ->
+                .setNegativeButton("Cancel") { dialog, _ ->
                     dialog.dismiss()
                 }
                 .show()
         }
-
+    
         // Hist button
         histButton.setOnClickListener {
             if (historyContainer.visibility == View.VISIBLE) {
                 collapse(historyContainer)
             } else {
                 expand(historyContainer)
-                loadHistory(historyTable, friend)
+                loadHistory(historyTable, position)
             }
         }
 
@@ -219,7 +250,27 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
                     return@setOnClickListener
                 }
                 val sendNotification = SendNotification()
-                sendNotification.sendNotification(context, friend.email, profile, friend)
+                val qrInst = QRGenerator()
+                Log.d("URL", "${profile.bankAccount}, ${profile.bankName}, ${profile.acqId}, ${friend.hist.total}")
+                qrInst.generateQRCode(profile.bankAccount, profile.bankName, profile.acqId, friend.hist.total, "Pay money") { qrUrl ->
+                    Log.d("URL", qrUrl.toString())
+                    if (qrUrl != null) {
+                        // upload the qr to Firebase
+                        // val uploadQR = UploadQR()
+//                        uploadQR.uploadQrToFirebase(qrUrl) { downloadUrl ->
+//                            Log.d("URL", downloadUrl.toString())
+//                            sendNotification.sendNotification(context, friend.email, profile, friend, downloadUrl)
+//                            friends[position] = friend
+//                            profile.friends = friends
+//                            profileManagement.saveProfile(profile)
+//                        }
+                        sendNotification.sendNotification(context, friend.email, profile, friend, qrUrl)
+                        friends[position] = friend
+                        profile.friends = friends
+                        profileManagement.saveProfile(profile)
+
+                    }
+                }
             }
             else {
                 val emailVerify = EmailVerify()
@@ -275,11 +326,13 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
         animator.start()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
-    private fun loadHistory(historyTable: TableLayout, friend: Friend) {
+    private fun loadHistory(historyTable: TableLayout, position: Int) {
+        val friend = friends[position]
         historyTable.removeViews(1, historyTable.childCount - 1) // Clear old rows
 
-        val historyList = friend.hist.getList()
+        val historyList = friend.hist.getList().toMutableList()
 
         if (historyList.isEmpty()) {
             val emptyRow = TableRow(context).apply {
@@ -295,31 +348,53 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
             return
         }
 
-        for (entry in historyList) {
+        for (i in historyList.indices) {
+            val entry = historyList[i]
             val row = TableRow(context)
-
             val dateText = TextView(context).apply {
                 text = entry.date
                 setPadding(8, 4, 8, 4)
                 gravity = Gravity.CENTER
                 setTextColor(ContextCompat.getColor(context, android.R.color.black))
                 setBackgroundColor(ContextCompat.getColor(context, R.color.teal_200))
+                typeface = resources.getFont(R.font.roboto_light)
             }
 
-            val placeText = TextView(context).apply {
-                text = entry.name
+            val placeText = EditText(context).apply {
+                setText(entry.name)
                 setPadding(8, 4, 8, 4)
                 gravity = Gravity.CENTER
                 setTextColor(ContextCompat.getColor(context, android.R.color.black))
                 setBackgroundColor(ContextCompat.getColor(context, R.color.teal_200))
+                //setBackgroundResource(R.drawable.blue_border)
+                typeface = resources.getFont(R.font.roboto_light)
             }
 
-            val priceText = TextView(context).apply {
-                text = "${entry.price} đ"
+            val priceText = EditText(context).apply {
+                setText("${entry.price}")
                 setPadding(8, 4, 8, 4)
                 gravity = Gravity.CENTER
                 setTextColor(ContextCompat.getColor(context, android.R.color.black))
                 setBackgroundColor(ContextCompat.getColor(context, R.color.teal_200))
+                //setBackgroundResource(R.drawable.blue_border)
+                typeface = resources.getFont(R.font.roboto_light)
+            }
+
+            priceText.doAfterTextChanged {
+                entry.price = priceText.text.toString().toIntOrNull() ?: 0
+                friends[position].hist.hist = historyList.toList()
+                friends[position].hist.recalculate()
+                sync(fragmentView.findViewById(R.id.listView))
+                profile.friends = friends
+
+                profileManagement.saveProfile(profile)
+            }
+
+            placeText.doAfterTextChanged {
+                entry.name = placeText.text.toString()
+                friends[position].hist.hist = historyList.toList()
+                profile.friends = friends
+                profileManagement.saveProfile(profile)
             }
 
             row.addView(dateText)
@@ -341,12 +416,17 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
             val view = listView.getChildAt(i) ?: continue
             val moneyText = view.findViewById<TextView>(R.id.money)
             val nameText = view.findViewById<TextView>(R.id.friend_name)
+            friends[i].hist.recalculate()
             val money = friends[i].hist.total
-
             friends[i].sync()
             moneyText.text = money.toString()
             nameText.setTextColor(ContextCompat.getColor(context, friends[i].color))
             moneyText.setTextColor(ContextCompat.getColor(context, friends[i].color))
+
+            if (!friends[i].verified) {
+                val notifyButton = view.findViewById<Button>(R.id.notifyFriend)
+                notifyButton.text = "Verify"
+            }
         }
 
         profile.friends = friends.toList()

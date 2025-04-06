@@ -1,14 +1,21 @@
 package com.example.cuoi
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.net.Uri
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
+import androidx.browser.customtabs.CustomTabsIntent
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
@@ -16,6 +23,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var profile: Profile
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         super.onCreate(savedInstanceState)
 
         // Check login state

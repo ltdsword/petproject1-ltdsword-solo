@@ -1,7 +1,7 @@
 Author: ltdsword.
 
 Le Tien Dat, Advanced Program in Computer Science. <br/> 
-Faculity of Information Teachnology, University of Science - VNU-HCM.
+Faculity of Information Technology, University of Science - VNU-HCM.
 
 This is a pet-project coming from the need in calculating and summarizing informations (loans, money,...) in real life. <br/>
 **Note: This application is only available on Android, so I'm so sorry to iPhone's fans.

@@ -1,6 +1,9 @@
 package com.example.cuoi
 import android.app.AlertDialog
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -114,30 +117,40 @@ class EmailVerify {
 }
 
 class SendNotification {
-    fun sendNotification(context: Context, toEmail: String, profile: Profile, friend: Friend) {
+    fun sendNotification(context: Context, toEmail: String, profile: Profile, friend: Friend, qrUrl: String?) {
         val now = Timestamp.now().seconds
         if (now - friend.lastSent < 86400) {
-            Toast.makeText(context, "You need to wait ${((friend.lastSent + 86400 - now)/60).toInt()} minutes before sending.", Toast.LENGTH_SHORT).show()
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(
+                    context,
+                    "You need to wait ${((friend.lastSent + 86400 - now) / 60).toInt()} minutes before sending.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
             return
         }
-        friend.lastSent = now
         val sharedPreferences = (context.applicationContext as MyApplication).sharedPreferences
         val apiKey = sharedPreferences.getString("API_KEY", null) ?: return
         val fromEmail = "ltdsword12@gmail.com"
-
+        
         val emailBody = """
         <h3>Hello,</h3>
-        <p>${profile.name} announces to you that:</p>
-        <h2>It's time to pay his/her money!!!!!</h2>
+        <p>${profile.name} announces to you (with username: ${friend.name}) that:</p>
+        <h2>It's time to pay your loan!!!!!</h2>
         <p>The amount of money is <strong>${friend.hist.total}</strong>.</p>
-        <p>You can send it to him/her using the following bank account:</p>
-        <p><strong>Bank: ${profile.bankName}</strong></p>
+        
+        <p>Please scan the QR Code below to proceed with the payment:</p>
+        <img src="cid:qrcode_cid" alt="QR Code" style="max-width: 300px; height: auto;" />
+        <p>Or you can send it to him/her using the following bank account:</p>
+        <p><strong>Bank Name: ${profile.bankName}</strong></p>
         <p><strong>Account Number: ${profile.bankAccount}</strong></p>
         <p><strong>Phone Number: ${profile.phoneNumber}</strong></p>
         <br>
         <p>Best Regards,</p>
         <p><strong>Le Tien Dat</strong>, Developer of the System.</p>
     """.trimIndent()
+
+        val base64Data = qrUrl?.substringAfter("base64,", qrUrl)
 
         val jsonObject = JSONObject().apply {
             put("personalizations", JSONArray().put(JSONObject().apply {
@@ -147,7 +160,14 @@ class SendNotification {
             put("from", JSONObject().put("email", fromEmail))
             put("content", JSONArray().put(JSONObject().apply {
                 put("type", "text/html")
-                put("value", emailBody.replace("\"", "\\\""))
+                put("value", emailBody)
+            }))
+            put("attachments", JSONArray().put(JSONObject().apply {
+                put("content", base64Data)
+                put("type", "image/png")
+                put("filename", "qrcode.png")
+                put("disposition", "inline") // Use "attachment" if you want it as a downloadable file
+                put("content_id", "qrcode_cid") // Optional, used if embedding inline with CID
             }))
         }
 
@@ -167,7 +187,15 @@ class SendNotification {
             override fun onResponse(call: Call, response: Response) {
                 println("Response Status Code: ${response.code}")
                 if (response.code == 202) {
-                    Toast.makeText(context, "Send notify email successfully!", Toast.LENGTH_SHORT).show()
+                    Handler(Looper.getMainLooper()).post {
+                        Toast.makeText(context, "Notification sent successfully!", Toast.LENGTH_SHORT).show()
+                    }
+                    friend.lastSent = now
+                }
+                else {
+                    Handler(Looper.getMainLooper()).post {
+                        Toast.makeText(context, "Error sending notification!", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         })

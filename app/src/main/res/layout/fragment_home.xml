@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".HomeFragment">
 
-    <!-- Loading Indicator (Initially Visible) -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
@@ -42,27 +41,40 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
-                android:id="@+id/greeting"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginLeft="8dp"
-                android:text="Good"
-                android:fontFamily="@font/sfheavy"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:layout_gravity="end"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Datdeptrai"
-                android:padding="8dp"
-                android:fontFamily="@font/fleurdeleah"
-                android:textStyle="bold"
-                android:textColor="@color/red"
-                android:textSize="30sp" />
+                <TextView
+                    android:id="@+id/greeting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginStart="12dp"
+                    android:text="Good"
+                    android:fontFamily="@font/sfheavy"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="15dp"
+                    android:fontFamily="@font/fleurdeleah"
+                    android:gravity="end"
+                    android:padding="8dp"
+                    android:text="Datdeptrai"
+                    android:textColor="@color/red"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -120,7 +132,7 @@
                 android:divider="@color/white"
                 android:dividerHeight="4dp" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -140,25 +152,46 @@
                     android:id="@+id/apply"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="80dp"
+                    android:layout_alignParentEnd="true"
                     android:text="Apply"
                     android:textStyle="bold"
                     android:textColor="@color/redder"
                     android:textSize="16sp"
                     android:fontFamily="@font/sfheavy"
                     android:backgroundTint="@color/pink"/>
-            </LinearLayout>
+            </RelativeLayout>
 
-            <Button
-                android:id="@+id/chooseAll"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Choose All"
-                android:backgroundTint="@color/teal_200"
-                android:textColor="@color/black"
-                android:fontFamily="@font/sfheavy"
-                android:layout_marginLeft="20dp"
-                android:textSize="15sp"/>
+                android:orientation="horizontal" >
+
+
+                <Button
+                    android:id="@+id/chooseAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Choose All"
+                    android:backgroundTint="@color/teal_200"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/sfheavy"
+                    android:layout_marginLeft="20dp"
+                    android:textSize="15sp"/>
+
+                <Button
+                    android:id="@+id/quickSelect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_alignParentEnd="true"
+                    android:text="Quick choose"
+                    android:backgroundTint="@color/teal_200"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/sfheavy"
+                    android:textSize="15sp"/>
+            </RelativeLayout>
+
+
         </LinearLayout>
     </ScrollView>
 

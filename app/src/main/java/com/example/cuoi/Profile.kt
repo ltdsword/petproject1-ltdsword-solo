@@ -6,7 +6,7 @@ import com.google.firebase.firestore.Exclude
 import java.util.Date
 
 @Keep
-data class Item(val name: String = "", val price: Int = 0, val date: String = "")
+data class Item(var name: String = "", var price: Int = 0, var date: String = "")
 
 @Keep
 data class History(
@@ -14,7 +14,7 @@ data class History(
     var hist: List<Item> = listOf()
     ) {
     @Exclude
-    private fun recalculate(): Int {
+    fun recalculate(): Int {
         total = 0
         for (i in hist) {
             total += i.price
@@ -26,6 +26,31 @@ data class History(
     fun addObject(date: String, name: String, price: Int) {
         hist = hist + (Item(name, price, date))
         total += price
+    }
+
+    @Exclude
+    fun minusObject(price: Int) {
+        if (price >= total) {
+            clear()
+            return
+        }
+        val tempHist = hist.toMutableList()
+        println(tempHist)
+        var temp = price
+        while (tempHist.isNotEmpty() and (temp > 0)) {
+            println("$temp, ${tempHist[0].price}")
+            if (temp > tempHist[0].price) {
+                temp -= tempHist[0].price
+                tempHist.removeAt(0)
+            }
+            else {
+                tempHist[0].price -= temp
+                temp = 0
+            }
+        }
+        println(tempHist)
+        total -= price
+        hist = tempHist.toList()
     }
 
     @Exclude
@@ -101,6 +126,8 @@ data class Profile(
     var email: String = "",
     var bankAccount: String = "",
     var bankName: String = "",
+    var nameBank: String = "",
+    var acqId: Int = 0,
     var cache: Map<String, Int> = emptyMap(),
     //var hist: MutableList<Pair<String, Int>> = mutableListOf(),
     var friends: List<Friend> = listOf()

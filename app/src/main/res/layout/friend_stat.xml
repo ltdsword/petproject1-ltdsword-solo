@@ -8,118 +8,136 @@
     android:background="@drawable/border"
     android:padding="8dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/changeButton"
-            android:contentDescription="Change"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/baseline_edit_square_24"
-            android:backgroundTint="@color/white" />
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="0dp" >
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/friend_name"
-                android:layout_width="210dp"
+            <ImageButton
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:fontFamily="@font/sfheavy"
-                android:padding="8dp"
-                android:text="Name"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:id="@+id/changeButton"
+                android:contentDescription="Change"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/baseline_edit_square_24"
+                android:backgroundTint="@color/white" />
 
-            <TextView
-                android:id="@+id/friend_email"
-                android:layout_width="210dp"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:fontFamily="@font/sfheavy"
-                android:hint="No email"
-                android:textColor="#555555"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:padding="0dp">
+
+                <TextView
+                    android:id="@+id/friend_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:fontFamily="@font/sfheavy"
+                    android:padding="8dp"
+                    android:text="Name"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/friend_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:fontFamily="@font/sfheavy"
+                    android:hint="No email"
+                    android:textColor="#555555"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
-
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/notifyFriend"
+            android:layout_alignParentEnd="true"
             android:text="Notify"
             android:background="@drawable/border"
             android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
             android:textSize="16sp"
             android:fontFamily="@font/sfheavy"
             />
+    </RelativeLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="8dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Remain: "
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            android:padding="0dp"
-            android:fontFamily="@font/sfheavy" />
+            android:orientation="horizontal" >
 
-        <TextView
-            android:id="@+id/money"
-            android:layout_width="96dp"
-            android:layout_height="wrap_content"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remain: "
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:padding="0dp"
+                android:fontFamily="@font/sfheavy" />
 
-            android:fontFamily="@font/sfheavy"
-            android:padding="8dp"
-            android:text="money"
-            android:textSize="16sp" />
+            <TextView
+                android:id="@+id/money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:fontFamily="@font/sfheavy"
+                android:padding="8dp"
+                android:text="money"
+                android:textSize="16sp" />
+        </LinearLayout>
 
-        <Button
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/payButton"
-            android:text="Paid"
-            android:layout_marginLeft="0dp"
-            android:textSize="16sp"
-            android:fontFamily="@font/sfheavy"
-            />
+            android:layout_alignParentEnd="true"
+            android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/history"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/sfheavy"
-            android:text="Hist"
-            android:backgroundTint="@color/pink"
-            android:textSize="16sp"
-            android:layout_marginLeft="12dp"
-            android:textColor="@color/redder"
-            android:textStyle="bold" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/payButton"
+                android:text="Pay"
+                android:layout_weight="0"
+                android:layout_gravity="end"
+                android:textSize="16sp"
+                android:fontFamily="@font/sfheavy" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/sfheavy"
+                android:text="Hist"
+                android:layout_weight="0"
+                android:layout_marginStart="5dp"
+                android:backgroundTint="@color/pink"
+                android:textSize="16sp"
+                android:textColor="@color/redder"
+                android:textStyle="bold"
+                android:layout_gravity="end" />
+        </LinearLayout>
+    </RelativeLayout>
 
     <!-- Hidden history section (will expand/collapse dynamically) -->
     <LinearLayout
         android:id="@+id/historyContainer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone"
         android:animateLayoutChanges="true"
@@ -144,6 +162,7 @@
                     android:text="Date"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"
+                    android:fontFamily="@font/roboto_medium"
                     android:gravity="center"
                     android:padding="4dp" />
 
@@ -153,6 +172,7 @@
                     android:text="Name"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"
+                    android:fontFamily="@font/roboto_medium"
                     android:gravity="center"
                     android:padding="4dp" />
 
@@ -162,6 +182,7 @@
                     android:text="Price"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"
+                    android:fontFamily="@font/roboto_medium"
                     android:gravity="center"
                     android:padding="4dp" />
             </TableRow>

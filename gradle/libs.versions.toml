@@ -1,5 +1,6 @@
 [versions]
 agp = "8.8.0"
+browser = "1.8.0"
 firebaseBom = "33.9.0"
 firebaseBomVersion = "33.9.0"
 gson = "2.10.1"
@@ -18,8 +19,10 @@ securityCrypto = "1.1.0-alpha06"
 sendgridJava = "4.10.1"
 securityCryptoKtx = "1.0.0"
 firebaseCommonKtx = "21.0.0"
+firebaseCrashlyticsBuildtools = "3.0.3"
 
 [libraries]
+androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
@@ -43,6 +46,7 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 sendgrid-java = { module = "com.sendgrid:sendgrid-java", version.ref = "sendgridJava" }
 androidx-security-crypto-ktx = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "securityCryptoKtx" }
 firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebaseCommonKtx" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

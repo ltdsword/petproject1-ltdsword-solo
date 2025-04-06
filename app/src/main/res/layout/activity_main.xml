@@ -8,38 +8,41 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
     tools:context=".MainActivity">
-    
-    
-    <LinearLayout
+
+    <!-- CoordinatorLayout helps manage FAB and content -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:id="@+id/toolbar"
-            android:elevation="4dp"
-            android:background="@color/blue"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
-
+        <!-- Main content layout -->
         <FrameLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/fragment_container"/>
+            android:layout_height="match_parent" />
 
-    </LinearLayout>
+        <!-- Floating Action Button at Top-Left -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_gravity="top|start"
+            app:srcCompat="@drawable/baseline_format_list_bulleted_24"
+            app:backgroundTint="@color/white"
+            app:maxImageSize="40dp"
+            app:useCompatPadding="true" />
 
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_menu"
         app:itemIconTint="@color/blue"
-        app:itemTextColor="@color/black"/>
-
+        app:itemTextColor="@color/black" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

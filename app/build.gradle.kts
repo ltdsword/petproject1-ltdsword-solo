@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -12,7 +14,7 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -36,6 +38,7 @@ android {
     packaging {
         resources {
             excludes += "META-INF/DEPENDENCIES"
+            excludes += "mozilla/public-suffix-list.txt"
         }
     }
     buildFeatures {
@@ -60,6 +63,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.common.ktx)
+    implementation(libs.firebase.crashlytics.buildtools)
 //    implementation(libs.androidx.security.crypto.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -76,7 +80,10 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.storage.ktx)
     implementation(libs.firebase.messaging.ktx)
+    implementation(libs.androidx.browser)
     implementation(platform(libs.firebase.bom.v3270)) // Example, check latest version
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
 }
 

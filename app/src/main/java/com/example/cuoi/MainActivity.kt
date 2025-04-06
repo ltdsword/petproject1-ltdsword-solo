@@ -1,5 +1,6 @@
 package com.example.cuoi
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -14,10 +15,17 @@ import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.navigation.NavigationView
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 // Extend on navigation item selected listener
@@ -29,8 +37,45 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var profile: Profile
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val db = FirebaseFirestore.getInstance()
+        // Compare the version
+        // If the version is different, give the user the option to update
+        db.collection("update").document("version").get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val versionValue = document.getString("value") // Get the "value" field
+                    val versionName = packageManager.getPackageInfo(packageName, 0).versionName
+                    if (versionValue != versionName) {
+                        AlertDialog.Builder(this)
+                            .setTitle("Update notification")
+                            .setMessage("The app has a new update.")
+                            .setMessage("Do you want to update?")
+                            .setPositiveButton("Yes sure") { dialog, _ ->
+                                // User confirmed, retrieve prices
+                                // Save data
+                                val url = "https://github.com/ltdsword/petproject1-ltdsword-solo/releases/tag/v${versionValue}"
+                                val customTabsIntent = CustomTabsIntent.Builder().build()
+                                customTabsIntent.launchUrl(this, Uri.parse(url))
+                                dialog.dismiss() // Close the dialog
+                            }
+                            .setNegativeButton("Nono") { dialog, _ ->
+                                // User canceled, just dismiss the dialog
+                                dialog.dismiss()
+                            }
+                            .show()
+                    }
+                } else {
+                    Log.e("Firestore", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Error getting document", exception)
+            }
 
         // Check if user is logged in
         val sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
@@ -57,20 +102,36 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             email = profile.email
 
             setContentView(R.layout.activity_main)
-            drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
+            drawerLayout = findViewById(R.id.drawer_layout)
 
-            // initialize the toolbar
-            val toolbar = findViewById<Toolbar>(R.id.toolbar)
-            setSupportActionBar(toolbar)
+//            // initialize the toolbar
+//            val toolbar = findViewById<Toolbar>(R.id.toolbar)
+//            setSupportActionBar(toolbar)
+
+            val fabMenu: FloatingActionButton = findViewById(R.id.fab_menu) // FAB button
+
+            // Handle FAB click to open/close the navigation drawer
+            fabMenu.setOnClickListener {
+                if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.openDrawer(GravityCompat.START)
+                } else {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                }
+            }
 
             // init navigation view
             val navigationView = findViewById<NavigationView>(R.id.nav_view)
             navigationView.setNavigationItemSelectedListener(this@MainActivity)
 
-            // create a toggle
-            val toggle = ActionBarDrawerToggle(this@MainActivity, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav)
-            drawerLayout.addDrawerListener(toggle)
-            toggle.syncState()
+//            if (savedInstanceState == null) {
+//                replaceFragment(HomeFragment())
+//                navigationView.setCheckedItem(R.id.nav_home)
+//            }
+
+//            // create a toggle
+//            val toggle = ActionBarDrawerToggle(this@MainActivity, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav)
+//            drawerLayout.addDrawerListener(toggle)
+//            toggle.syncState()
 
             // set the default fragment
             if (savedInstanceState == null) {

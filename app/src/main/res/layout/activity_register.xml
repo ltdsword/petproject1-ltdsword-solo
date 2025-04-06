@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_bold"
-            android:background="@drawable/border"
+            android:background="@drawable/white_border"
             android:padding="12dp"
             android:layout_marginTop="15dp"
             android:textSize="18sp"
