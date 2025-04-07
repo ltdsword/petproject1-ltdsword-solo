@@ -22,7 +22,7 @@ class ProfileManagement {
             }
     }
 
-    private fun getProfileHelper(username: String, callback: (Profile?) -> Unit) {
+    fun getProfileHelper(username: String, callback: (Profile?) -> Unit) {
         val db = FirebaseFirestore.getInstance()
         db.collection("users").document(username).get()
             .addOnSuccessListener { document ->
@@ -61,6 +61,32 @@ class ProfileManagement {
             }
         }
         return exist
+    }
+
+    fun getUsernameViaEmail(email: String, callback: (String) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("users")
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    val username = document.id
+                    val data = document.data
+
+                    var flag = false
+                    for (key in data.keys) {
+                        if (key == "email" && data[key] == email) {
+                            flag = true
+                            callback(username)
+                            break
+                        }
+                    }
+
+                    if (!flag) callback("")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
+            }
     }
 
     fun saveProfile(profile: Profile) {

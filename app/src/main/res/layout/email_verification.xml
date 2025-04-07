@@ -9,7 +9,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="An email has been sent."
+        android:layout_marginTop="15dp"
+        android:text="An OTP has been sent to your email."
         android:fontFamily="@font/roboto_bold"
         android:textSize="16sp" />
 
@@ -33,6 +34,15 @@
         android:padding="10dp"
         android:background="@drawable/border"
         android:id="@+id/codeInput" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:text="Note: The code will expire in 5 minutes."
+        android:fontFamily="@font/roboto_bold"
+        android:textSize="15sp" />
 
     <TextView
         android:layout_width="wrap_content"

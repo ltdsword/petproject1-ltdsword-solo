@@ -42,6 +42,7 @@ class EmailVerify {
         <p>Below is your verification code:</p>
         <h2>$verificationCode</h2>
         <p>Please enter this code in the app to verify your email.</p>
+        <p><strong>Note:</strong> This code will expire in 5 minutes.</p>
         <br>
         <p>Best Regards,</p>
         <p><strong>Le Tien Dat</strong>, Developer of the System.</p>
@@ -86,6 +87,8 @@ class EmailVerify {
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Verify Your Email")
 
+        var start = Timestamp.now().seconds
+
         val view = LayoutInflater.from(context).inflate(R.layout.email_verification, null)
         val codeInput = view.findViewById<EditText>(R.id.codeInput)
         val resendEmailButton = view.findViewById<TextView>(R.id.resendEmailButton)
@@ -94,12 +97,18 @@ class EmailVerify {
 
         resendEmailButton.setOnClickListener {
             correctCode = generateVerificationCode()
+            start = Timestamp.now().seconds
             sendVerificationEmail(toEmail, correctCode, context)
         }
 
         builder.setPositiveButton("Verify") { _, _ ->
             val enteredCode = codeInput.text.toString()
-
+            val now = Timestamp.now().seconds
+            if (now - start > 600) {
+                Toast.makeText(context, "Code expired. Try again.", Toast.LENGTH_SHORT).show()
+                onSuccess(false)
+                return@setPositiveButton
+            }
             if (enteredCode == correctCode) {
                 Toast.makeText(context, "Email verified successfully!", Toast.LENGTH_SHORT).show()
                 onSuccess(true)

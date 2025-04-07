@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (document.exists()) {
                     val versionValue = document.getString("value") // Get the "value" field
                     val versionName = packageManager.getPackageInfo(packageName, 0).versionName
+                    Log.d("Version", "Current version: $versionName, Latest version: $versionValue")
                     if (versionValue != versionName) {
                         AlertDialog.Builder(this)
                             .setTitle("Update notification")
