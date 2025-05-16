@@ -51,6 +51,9 @@ This is a pet-project coming from the need in calculating and summarizing inform
     - Data saving using Firebase Database.
     - The color of your friend also changes based on the money he/she owns you.
 
+7. Chat with AI  (New):
+   - By version 0.4, you can interact with our AI-powered assistant, which can help you in selecting the place to go or retrieve some information about your friend.
+
 Thank you for reading till this. Hope you enjoy using my app. <br/>
 Since this is my first project about Android development, errors or bugs are unavoidable.
 
