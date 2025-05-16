@@ -87,6 +87,16 @@ class LoginActivity : AppCompatActivity() {
             val username = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
 
+            if (username.first() == '\\' || username.first() == '/') {
+                Toast.makeText(this, "Invalid username!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (username == "" || password == "") {
+                Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             lifecycleScope.launch {
                 val profileTemp = profileManagement.getProfile(username)
                 if (profileTemp != null) {
@@ -108,7 +118,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
                 else {
-                    Toast.makeText(this@LoginActivity, "Invalid name!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginActivity, "Invalid username!", Toast.LENGTH_SHORT).show()
                     return@launch
                 }
             }

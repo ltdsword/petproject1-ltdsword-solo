@@ -16,12 +16,16 @@ class QRGenerator {
 
     fun generateQRCode(accountNo: String, accountName: String, acqId: Int, amount: Int?, addInfo: String?, callback: (String?) -> Unit) {
         val request = QRRequest(accountNo, accountName, acqId, amount, addInfo)
-        Log.d("URL", "$accountNo,$accountName, $acqId, $amount")
+        Log.d("URL1", "$accountNo,$accountName, $acqId, $amount") // [1]
+        Log.d("URL1", "Line 20")
         api.generateQR(request).enqueue(object : Callback<QRResponse> {
             override fun onResponse(call: Call<QRResponse>, response: Response<QRResponse>) {
+                Log.d("URL1", "Line 23")
                 if (response.isSuccessful) {
+                    Log.d("URL1", "Line 25")
                     val rawJson = response.body()
                     Log.d("FullRaw", rawJson.toString())  // Prints what your model parsed
+                    Log.d("URL1", "Line 27")
                     val qrUrl = response.body()?.data?.qrDataURL
                     callback(qrUrl)  // Return QR Code URL
                 } else {

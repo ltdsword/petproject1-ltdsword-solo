@@ -156,6 +156,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_settings -> replaceFragment(SettingsFragment())
             R.id.nav_info -> replaceFragment(AboutFragment())
             R.id.nav_analytics -> replaceFragment((StatisticsFragment()))
+            R.id.nav_help -> replaceFragment(HelpFragment())
             R.id.nav_logout -> {
                 Toast.makeText(this, "Logout!", Toast.LENGTH_SHORT).show()
                 logout()

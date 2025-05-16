@@ -252,18 +252,11 @@ class FriendStatAdapter(context: Context, private val friends: MutableList<Frien
                 val sendNotification = SendNotification()
                 val qrInst = QRGenerator()
                 Log.d("URL", "${profile.bankAccount}, ${profile.bankName}, ${profile.acqId}, ${friend.hist.total}")
+                Toast.makeText(context, "OK, QRGenerator Created.", Toast.LENGTH_SHORT).show()
                 qrInst.generateQRCode(profile.bankAccount, profile.bankName, profile.acqId, friend.hist.total, "Pay money") { qrUrl ->
                     Log.d("URL", qrUrl.toString())
-                    if (qrUrl != null) {
+                    if (qrUrl != null) {    
                         // upload the qr to Firebase
-                        // val uploadQR = UploadQR()
-//                        uploadQR.uploadQrToFirebase(qrUrl) { downloadUrl ->
-//                            Log.d("URL", downloadUrl.toString())
-//                            sendNotification.sendNotification(context, friend.email, profile, friend, downloadUrl)
-//                            friends[position] = friend
-//                            profile.friends = friends
-//                            profileManagement.saveProfile(profile)
-//                        }
                         sendNotification.sendNotification(context, friend.email, profile, friend, qrUrl)
                         friends[position] = friend
                         profile.friends = friends

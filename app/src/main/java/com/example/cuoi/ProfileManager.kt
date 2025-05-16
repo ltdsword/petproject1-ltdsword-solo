@@ -23,9 +23,11 @@ class ProfileManagement {
     }
 
     fun getProfileHelper(username: String, callback: (Profile?) -> Unit) {
+        Log.d("Firestore", "Fetching profile for username: $username")
         val db = FirebaseFirestore.getInstance()
         db.collection("users").document(username).get()
             .addOnSuccessListener { document ->
+                Log.d("Firestore", "Line 30, Fetching profile for username: $username")
                 if (document.exists()) {
                     Log.d("Firestore", "Data: ${document.data}") // Debugging
                     val profile = document.toObject(Profile::class.java)

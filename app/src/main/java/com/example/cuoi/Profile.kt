@@ -145,4 +145,12 @@ data class Profile(
         }
         return tot
     }
+
+    @Exclude
+    fun getPlaces(): List<String> {
+        var temp = cache.keys.toList()
+        // remove duplicate
+        temp = temp.distinct()
+        return temp
+    }
 }

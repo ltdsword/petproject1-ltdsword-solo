@@ -23,7 +23,10 @@
             android:id="@+id/nav_info"
             android:icon="@drawable/baseline_info_24"
             android:title="About"/>
-
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/baseline_help_24"
+            android:title="Help"/>
     </group>
 
     <item

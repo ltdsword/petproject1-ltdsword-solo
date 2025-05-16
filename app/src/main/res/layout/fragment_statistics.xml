@@ -48,7 +48,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Người ta hiện đang nợ bạn"
+                android:text="Total current loan:"
+                android:layout_gravity="center"
                 android:textStyle="bold"
                 android:fontFamily="@font/sfheavy"
                 android:textSize="18sp" />
@@ -58,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Current Money..."
-                android:gravity="center"
+                android:layout_gravity="center"
                 android:padding="8dp"
                 android:textColor="@color/redder"
                 android:textSize="30sp" />
@@ -66,7 +67,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bắt họ trả đi, không là mất đó!"
+                android:text="Remember to notify them if needed!"
                 android:textSize="15sp"
                 android:fontFamily="@font/sfheavy"/>
         </LinearLayout>

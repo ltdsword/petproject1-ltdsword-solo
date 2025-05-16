@@ -207,7 +207,6 @@ class SettingsFragment : Fragment() {
 
     private fun loadBanks(nameBankButton: Button) {
         // Show loading if needed
-
         bankFetcher.fetchBanks { banks ->
             // Handle UI updates on the main thread using Handler
             Handler(Looper.getMainLooper()).post {

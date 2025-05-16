@@ -69,11 +69,11 @@ class EmailVerify {
             .build()
 
         client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
+            override fun onFailure(call: okhttp3.Call, e: IOException) {
                 e.printStackTrace()
             }
 
-            override fun onResponse(call: Call, response: Response) {
+            override fun onResponse(call: okhttp3.Call, response: Response) {
                 val responseBody = response.body?.string() ?: "No response body"
             }
         })
